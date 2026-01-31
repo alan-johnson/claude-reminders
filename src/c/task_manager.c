@@ -74,6 +74,8 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
       menu_cell_basic_draw(ctx, cell_layer, task->name, subtitle, NULL);
       break;
     }
+    case STATE_TASK_DETAIL:
+      break;
   }
 }
 
@@ -87,6 +89,8 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
     case STATE_TASKS:
       selected_task_index = cell_index->row;
       show_task_detail();
+      break;
+    case STATE_TASK_DETAIL:
       break;
   }
 }
