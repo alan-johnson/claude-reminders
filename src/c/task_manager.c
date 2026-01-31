@@ -53,6 +53,8 @@ static void show_task_detail(void);
 
 // Menu callbacks
 static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "menu_get_num_rows_callback called");
+  
   switch(current_state) {
     case STATE_TASK_LISTS:
       return task_lists_count;
@@ -64,6 +66,8 @@ static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t secti
 }
 
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "menu_draw_row_callback called for row %d", cell_index->row);
+  
   switch(current_state) {
     case STATE_TASK_LISTS:
       menu_cell_basic_draw(ctx, cell_layer, task_lists[cell_index->row].name, NULL, NULL);
@@ -80,6 +84,9 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
+  
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "menu_select_callback called for row %d", cell_index->row);
+  
   switch(current_state) {
     case STATE_TASK_LISTS:
       selected_list_index = cell_index->row;
@@ -121,6 +128,8 @@ static void detail_window_load(Window *window) {
 }
 
 static void detail_window_unload(Window *window) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "detail_window_unload called");
+  
   text_layer_destroy(s_detail_text_layer);
   action_bar_layer_destroy(s_action_bar);
   gbitmap_destroy(s_checkmark_bitmap);
@@ -157,6 +166,9 @@ static void detail_click_config_provider(void *context) {
 }
 
 static void show_task_detail(void) {
+ 
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "show_task_detail called");
+  
   if (!s_detail_window) {
     s_detail_window = window_create();
     window_set_window_handlers(s_detail_window, (WindowHandlers) {
@@ -181,6 +193,8 @@ static void show_task_detail(void) {
 
 // AppMessage handlers
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox_received_callback called");
+  
   Tuple *type_tuple = dict_find(iterator, KEY_TYPE);
   
   if (type_tuple) {
@@ -188,11 +202,13 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     
     switch(type) {
       case 1: { // Task list names
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received list names");
         task_lists_count = 0;
         Tuple *name_tuple = dict_find(iterator, KEY_NAME);
         while (name_tuple && task_lists_count < 20) {
           snprintf(task_lists[task_lists_count].name, sizeof(task_lists[0].name), 
                    "%s", name_tuple->value->cstring);
+          APP_LOG(APP_LOG_LEVEL_DEBUG, "added list name: %s", task_lists[task_lists_count].name);
           task_lists_count++;
           name_tuple = dict_read_next(iterator);
         }
@@ -246,6 +262,8 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 // API functions
 static void fetch_task_lists(void) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_task_lists called");
+
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
   dict_write_uint8(iter, KEY_TYPE, 1); // Request task lists
@@ -253,6 +271,8 @@ static void fetch_task_lists(void) {
 }
 
 static void fetch_tasks(const char *list_name) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_tasks called for list: %s", list_name);
+
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
   dict_write_uint8(iter, KEY_TYPE, 2); // Request tasks
