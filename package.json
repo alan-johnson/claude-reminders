@@ -17,7 +17,7 @@
       "basalt",
       "aplite"
     ],
-    "enableMultiJS": false,
+    "enableMultiJS": true,
     "capabilities": [
       "configurable"
     ],
