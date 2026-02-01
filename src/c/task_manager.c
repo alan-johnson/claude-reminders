@@ -58,28 +58,6 @@ static const char *task_lists_testing[] = {
 };
 #endif
 
-// data for testing without javascript connection
-#define TESTING 1
-
-#if TESTING
-const char* task_lists_str[] = {
-  "Personal",
-  "Whirligigs and automatons",
-  "Tasks",
-  "Pebble",
-  "Bucket list",
-  "Shopping List",
-  "To Do",
-  "Reminders",
-  "To Dos",
-  "Shopping",
-  "Family",
-  "Groceries",
-  "Albums/songs",
-  "Work Tasks"
-};
-#endif
-
 // API callback keys
 #define KEY_TYPE 0
 #define KEY_NAME 1
@@ -93,11 +71,14 @@ const char* task_lists_str[] = {
 // Function prototypes
 static void fetch_task_lists_testing(void);
 static void fetch_task_lists(void);
-static void fetch_task_lists_testing(void);
 static void fetch_tasks(const char *list_name);
 static void fetch_tasks_testing(void);
 static void complete_task(const char *task_id, const char *list_name);
 static void show_task_detail(void);
+static void tasks_window_load(Window *window);
+static void tasks_window_unload(Window *window);
+static void lists_window_load(Window *window);
+static void lists_window_unload(Window *window);
 
 // Menu callbacks
 // Lists menu callbacks
@@ -117,14 +98,6 @@ static void lists_menu_select(MenuLayer *menu_layer, MenuIndex *cell_index, void
   APP_LOG(APP_LOG_LEVEL_DEBUG, "lists_menu_select called for row %d", cell_index->row);
   selected_list_index = cell_index->row;
   current_state = STATE_TASKS;
-  // Push tasks window first so its menu exists
-  if (!s_tasks_window) {
-    s_tasks_window = window_create();
-    window_set_window_handlers(s_tasks_window, (WindowHandlers) {
-      .load = tasks_window_load,
-      .unload = tasks_window_unload,
-    });
-  }
   window_stack_push(s_tasks_window, true);
 
   #ifdef TESTING
@@ -324,10 +297,12 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 static void fetch_task_lists_testing(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_task_lists_testing called");
   
-  task_lists_count = 14;
-  for (int i = 0; i < task_lists_count; i++) {
-    snprintf(task_lists[i].name, sizeof(task_lists[i].name), "%s", task_lists_str[i]);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "added list name: %s", task_lists[i].name);
+  task_lists_count = 0;
+  int n = (int)(sizeof(task_lists_testing) / sizeof(task_lists_testing[0]));
+  for (int i = 0; i < n && task_lists_count < (int)(sizeof(task_lists) / sizeof(task_lists[0])); i++) {
+    snprintf(task_lists[task_lists_count].name, sizeof(task_lists[task_lists_count].name), "%s", task_lists_testing[i]);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "added list name: %s", task_lists[task_lists_count].name);
+    task_lists_count++;
   }
   if (s_lists_menu) menu_layer_reload_data(s_lists_menu);
 }
@@ -454,11 +429,6 @@ static void complete_task(const char *task_id, const char *list_name) {
 static void tasks_window_unload(Window *window) {
   // When tasks window is closed we should return to lists state
   current_state = STATE_TASK_LISTS;
-  // Ensure lists menu is refreshed
-  if (s_lists_menu) {
-    menu_layer_reload_data(s_lists_menu);
-    menu_layer_set_selected_index(s_lists_menu, (MenuIndex){.section = 0, .row = selected_list_index}, MenuRowAlignCenter, false);
-  }
   if (s_tasks_menu) {
     menu_layer_destroy(s_tasks_menu);
     s_tasks_menu = NULL;
