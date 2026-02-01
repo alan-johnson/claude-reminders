@@ -35,6 +35,26 @@ static int tasks_count = 0;
 static int selected_list_index = 0;
 static int selected_task_index = 0;
 
+#define TESTING 1
+#ifdef TESTING
+static const char *task_lists_testing[] = {
+  "Personal",
+  "Whirligigs and automatons",
+  "Tasks",
+  "Pebble",
+  "Bucket list",
+  "Shopping List",
+  "To Do",
+  "Reminders",
+  "To Dos",
+  "Shopping",
+  "Family",
+  "Groceries",
+  "Albums/songs",
+  "Work Tasks"
+};
+#endif
+
 // API callback keys
 #define KEY_TYPE 0
 #define KEY_NAME 1
@@ -46,8 +66,10 @@ static int selected_task_index = 0;
 #define KEY_PRIORITY 7
 
 // Function prototypes
+static void fetch_task_lists_testing(void);
 static void fetch_task_lists(void);
 static void fetch_tasks(const char *list_name);
+static void fetch_tasks_testing(const char *list_name);
 static void complete_task(const char *task_id, const char *list_name);
 static void show_task_detail(void);
 
@@ -245,6 +267,47 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 }
 
 // API functions
+#ifdef TESTING
+static void fetch_task_lists_testing(void) {
+  task_lists_count = 0;
+  int n = (int)(sizeof(task_lists_testing) / sizeof(task_lists_testing[0]));
+  for (int i = 0; i < n && task_lists_count < (int)(sizeof(task_lists) / sizeof(task_lists[0])); i++) {
+    snprintf(task_lists[task_lists_count].name, sizeof(task_lists[0].name), "%s", task_lists_testing[i]);
+    task_lists_count++;
+  }
+  if (s_menu_layer) {
+    menu_layer_reload_data(s_menu_layer);
+  }
+}
+
+static void fetch_tasks_testing(const char *list_name) {
+  // Populate tasks[] with sample data tied to the requested list name
+  tasks_count = 0;
+  // Create a few sample tasks for the selected list
+  for (int i = 0; i < 6 && tasks_count < (int)(sizeof(tasks) / sizeof(tasks[0])); i++) {
+    // id like "lst-<idx>-<i>" truncated to fit
+    snprintf(tasks[tasks_count].id, sizeof(tasks[0].id), "%.*s-%d", 8, list_name, i+1);
+    snprintf(tasks[tasks_count].name, sizeof(tasks[0].name), "%s - Task %d", list_name, i+1);
+    tasks[tasks_count].idx = i;
+    tasks[tasks_count].priority = (i % 3);
+    if (i % 3 == 0) {
+      snprintf(tasks[tasks_count].due_date, sizeof(tasks[0].due_date), "No due date");
+      tasks[tasks_count].completed = false;
+    } else if (i % 3 == 1) {
+      snprintf(tasks[tasks_count].due_date, sizeof(tasks[0].due_date), "2026-02-%02d", 2 + i);
+      tasks[tasks_count].completed = false;
+    } else {
+      snprintf(tasks[tasks_count].due_date, sizeof(tasks[0].due_date), "2026-02-%02d", 5 + i);
+      tasks[tasks_count].completed = true;
+    }
+    tasks_count++;
+  }
+  if (s_menu_layer) {
+    menu_layer_reload_data(s_menu_layer);
+  }
+}
+#endif
+
 static void fetch_task_lists(void) {
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
@@ -253,6 +316,10 @@ static void fetch_task_lists(void) {
 }
 
 static void fetch_tasks(const char *list_name) {
+#ifdef TESTING
+  fetch_tasks_testing(list_name);
+  return;
+#endif
   DictionaryIterator *iter;
   app_message_outbox_begin(&iter);
   dict_write_uint8(iter, KEY_TYPE, 2); // Request tasks
@@ -308,7 +375,12 @@ static void init(void) {
   window_stack_push(s_main_window, true);
   
   // Fetch initial data
+  #ifdef TESTING
+  fetch_task_lists_testing();
+  #else 
   fetch_task_lists();
+  #endif
+
 }
 
 static void deinit(void) {
