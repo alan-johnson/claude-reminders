@@ -3,9 +3,9 @@ ARFLAGS = ['rcs']
 AS = 'arm-none-eabi-gcc'
 BINDIR = '/usr/local/bin'
 BLOCK_MESSAGE_KEYS = []
-BUILD_DIR = 'aplite'
+BUILD_DIR = 'flint'
 BUILD_TYPE = 'app'
-BUNDLE_BIN_DIR = 'aplite'
+BUNDLE_BIN_DIR = 'flint'
 BUNDLE_NAME = 'claude-reminders.pbw'
 CC = ['arm-none-eabi-gcc']
 CCLNK_SRC_F = []
@@ -18,12 +18,12 @@ CFLAGS = ['-std=c99', '-mcpu=cortex-m3', '-mthumb', '-ffunction-sections', '-fda
 CFLAGS_MACBUNDLE = ['-fPIC']
 CFLAGS_cshlib = ['-fPIC']
 CPPPATH_ST = '-I%s'
-DEFINES = ['RELEASE', 'PBL_PLATFORM_APLITE', 'PBL_BW', 'PBL_RECT', 'PBL_COMPASS', 'PBL_DISPLAY_WIDTH=144', 'PBL_DISPLAY_HEIGHT=168', 'PBL_SDK_3']
+DEFINES = ['RELEASE', 'PBL_PLATFORM_FLINT', 'PBL_BW', 'PBL_RECT', 'PBL_MICROPHONE', 'PBL_HEALTH', 'PBL_COMPASS', 'PBL_DISPLAY_WIDTH=144', 'PBL_DISPLAY_HEIGHT=168', 'PBL_SDK_3']
 DEFINES_ST = '-D%s'
 DEST_BINFMT = 'elf'
 DEST_CPU = 'arm'
 DEST_OS = 'darwin'
-INCLUDES = ['aplite']
+INCLUDES = ['flint']
 LD = 'arm-none-eabi-ld'
 LIBDIR = '/usr/local/lib'
 LIBPATH_ST = '-L%s'
@@ -41,10 +41,10 @@ MESSAGE_KEYS_HEADER = '/Users/alanjohnson/Dev/claude-reminders/build/include/mes
 MESSAGE_KEYS_JSON = '/Users/alanjohnson/Dev/claude-reminders/build/js/message_keys.json'
 NODE_PATH = '/Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/node_modules'
 PEBBLE_SDK_COMMON = '/Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/common'
-PEBBLE_SDK_PLATFORM = '/Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite'
+PEBBLE_SDK_PLATFORM = '/Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/flint'
 PEBBLE_SDK_ROOT = '/Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble'
-PLATFORM = {'NAME': 'aplite', 'MAX_APP_BINARY_SIZE': 65536, 'MAX_APP_MEMORY_SIZE': 24576, 'MAX_WORKER_MEMORY_SIZE': 10240, 'MAX_RESOURCES_SIZE_APPSTORE': 131072, 'MAX_RESOURCES_SIZE_APPSTORE_2_X': 98304, 'MAX_RESOURCES_SIZE': 524288, 'DEFINES': ['PBL_PLATFORM_APLITE', 'PBL_BW', 'PBL_RECT', 'PBL_COMPASS', 'PBL_DISPLAY_WIDTH=144', 'PBL_DISPLAY_HEIGHT=168'], 'BUILD_DIR': 'aplite', 'BUNDLE_BIN_DIR': 'aplite', 'ADDITIONAL_TEXT_LINES_FOR_PEBBLE_H': [], 'MAX_FONT_GLYPH_SIZE': 256, 'TAGS': ['aplite', 'bw', 'rect', 'compass', '144w', '168h']}
-PLATFORM_NAME = 'aplite'
+PLATFORM = {'NAME': 'flint', 'MAX_APP_BINARY_SIZE': 65536, 'MAX_APP_MEMORY_SIZE': 65536, 'MAX_WORKER_MEMORY_SIZE': 10240, 'MAX_RESOURCES_SIZE_APPSTORE': 262144, 'MAX_RESOURCES_SIZE': 1048576, 'DEFINES': ['PBL_PLATFORM_FLINT', 'PBL_BW', 'PBL_RECT', 'PBL_MICROPHONE', 'PBL_HEALTH', 'PBL_COMPASS', 'PBL_DISPLAY_WIDTH=144', 'PBL_DISPLAY_HEIGHT=168'], 'BUILD_DIR': 'flint', 'BUNDLE_BIN_DIR': 'flint', 'ADDITIONAL_TEXT_LINES_FOR_PEBBLE_H': [], 'MAX_FONT_GLYPH_SIZE': 256, 'TAGS': ['flint', 'bw', 'rect', 'mic', 'health', 'compass', '144w', '168h']}
+PLATFORM_NAME = 'flint'
 PREFIX = '/usr/local'
 PROJECT_INFO = {'sdkVersion': '3', 'targetPlatforms': ['flint', 'emery', 'diorite', 'chalk', 'basalt', 'aplite'], 'enableMultiJS': False, 'capabilities': ['configurable'], 'projectType': 'native', 'displayName': 'Pebble Reminders', 'uuid': 'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d', 'watchapp': {'watchface': False, 'hiddenApp': False, 'onlyShownOnCommunication': False}, 'resources': {'media': [{'type': 'bitmap', 'name': 'IMAGE_CHECKMARK', 'file': 'checkmark-wht.png'}]}, 'messageKeys': {'KEY_TYPE': 0, 'KEY_NAME': 1, 'KEY_ID': 2, 'KEY_DUE_DATE': 3, 'KEY_COMPLETED': 4, 'KEY_LIST_NAME': 5, 'KEY_IDX': 6, 'KEY_PRIORITY': 7}, 'name': 'pebrems', 'shortName': 'Pebble Reminders', 'longName': 'Pebble Reminders', 'versionLabel': '1.0', 'companyName': 'Handsbreadth', 'appKeys': {'KEY_TYPE': 0, 'KEY_NAME': 1, 'KEY_ID': 2, 'KEY_DUE_DATE': 3, 'KEY_COMPLETED': 4, 'KEY_LIST_NAME': 5, 'KEY_IDX': 6, 'KEY_PRIORITY': 7}}
 REQUESTED_PLATFORMS = ['flint', 'emery', 'diorite', 'chalk', 'basalt', 'aplite']
@@ -52,7 +52,7 @@ RESOURCES_JSON = [{'type': 'bitmap', 'name': 'IMAGE_CHECKMARK', 'file': 'checkma
 RPATH_ST = '-Wl,-rpath,%s'
 SANDBOX = False
 SDK_VERSION_MAJOR = 5
-SDK_VERSION_MINOR = 78
+SDK_VERSION_MINOR = 86
 SHLIB_MARKER = None
 SIZE = 'arm-none-eabi-size'
 SONAME_ST = '-Wl,-h,%s'

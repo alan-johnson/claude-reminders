@@ -1,7 +1,7 @@
 Archive member included because of file (symbol)
 
 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
-                              src/c/task_manager.c.41.o (app_event_loop)
+                              src/c/task_manager.c.49.o (app_event_loop)
 
 Discarded input sections
 
@@ -17,32 +17,32 @@ Discarded input sections
  .jcr           0x0000000000000000        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
  .tm_clone_table
                 0x0000000000000000        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
- .text          0x0000000000000000        0x0 src/c/task_manager.c.41.o
- .bss           0x0000000000000000        0x0 src/c/task_manager.c.41.o
- .text          0x0000000000000000        0x0 aplite/appinfo.auto.c.41.o
- .bss           0x0000000000000000        0x0 aplite/appinfo.auto.c.41.o
- .text          0x0000000000000000        0x0 aplite/src/resource_ids.auto.c.41.o
- .bss           0x0000000000000000        0x0 aplite/src/resource_ids.auto.c.41.o
+ .text          0x0000000000000000        0x0 src/c/task_manager.c.49.o
+ .bss           0x0000000000000000        0x0 src/c/task_manager.c.49.o
+ .text          0x0000000000000000        0x0 aplite/appinfo.auto.c.49.o
+ .bss           0x0000000000000000        0x0 aplite/appinfo.auto.c.49.o
+ .text          0x0000000000000000        0x0 aplite/src/resource_ids.auto.c.49.o
+ .bss           0x0000000000000000        0x0 aplite/src/resource_ids.auto.c.49.o
  .data.RESOURCE_ID_IMAGE_CHECKMARK
-                0x0000000000000000        0x4 aplite/src/resource_ids.auto.c.41.o
- .text          0x0000000000000000        0x0 src/message_keys.auto.c.41.o
- .bss           0x0000000000000000        0x0 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 aplite/src/resource_ids.auto.c.49.o
+ .text          0x0000000000000000        0x0 src/message_keys.auto.c.49.o
+ .bss           0x0000000000000000        0x0 src/message_keys.auto.c.49.o
  .bss.MESSAGE_KEY_KEY_TYPE
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_PRIORITY
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_NAME
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_LIST_NAME
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_IDX
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_COMPLETED
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_ID
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .data.MESSAGE_KEY_KEY_DUE_DATE
-                0x0000000000000000        0x4 src/message_keys.auto.c.41.o
+                0x0000000000000000        0x4 src/message_keys.auto.c.49.o
  .bss           0x0000000000000000        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
  .text.accel_data_service_subscribe__deprecated
                 0x0000000000000000        0xc /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
@@ -1154,10 +1154,10 @@ Linker script and memory map
 
 LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
 LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
-LOAD src/c/task_manager.c.41.o
-LOAD aplite/appinfo.auto.c.41.o
-LOAD aplite/src/resource_ids.auto.c.41.o
-LOAD src/message_keys.auto.c.41.o
+LOAD src/c/task_manager.c.49.o
+LOAD aplite/appinfo.auto.c.49.o
+LOAD aplite/src/resource_ids.auto.c.49.o
+LOAD src/message_keys.auto.c.49.o
 LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a
 START GROUP
 LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/libgcc.a
@@ -1168,7 +1168,7 @@ LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolc
 
 .header         0x0000000000000000       0x82
  *(.pbl_header)
- .pbl_header    0x0000000000000000       0x82 aplite/appinfo.auto.c.41.o
+ .pbl_header    0x0000000000000000       0x82 aplite/appinfo.auto.c.49.o
                 0x0000000000000000                __pbl_app_info
 
 .note.gnu.build-id
@@ -1184,48 +1184,48 @@ LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolc
  .text          0x00000000000000a8       0x14 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
  *(.text.*)
  .text.app_message_result_to_string
-                0x00000000000000bc       0xe8 src/c/task_manager.c.41.o
+                0x00000000000000bc       0xe8 src/c/task_manager.c.49.o
  .text.tasks_window_unload
-                0x00000000000001a4       0x24 src/c/task_manager.c.41.o
+                0x00000000000001a4       0x24 src/c/task_manager.c.49.o
  .text.lists_window_unload
-                0x00000000000001c8       0x18 src/c/task_manager.c.41.o
+                0x00000000000001c8       0x18 src/c/task_manager.c.49.o
  .text.tasks_window_load
-                0x00000000000001e0       0x94 src/c/task_manager.c.41.o
+                0x00000000000001e0       0x94 src/c/task_manager.c.49.o
  .text.tasks_menu_get_num_rows
-                0x0000000000000274       0x28 src/c/task_manager.c.41.o
+                0x0000000000000274       0x28 src/c/task_manager.c.49.o
  .text.lists_menu_get_num_rows
-                0x000000000000029c       0x28 src/c/task_manager.c.41.o
+                0x000000000000029c       0x28 src/c/task_manager.c.49.o
  .text.outbox_sent_callback
-                0x00000000000002c4       0x1c src/c/task_manager.c.41.o
+                0x00000000000002c4       0x1c src/c/task_manager.c.49.o
  .text.outbox_failed_callback
-                0x00000000000002e0       0x40 src/c/task_manager.c.41.o
+                0x00000000000002e0       0x40 src/c/task_manager.c.49.o
  .text.inbox_dropped_callback
-                0x0000000000000320       0x24 src/c/task_manager.c.41.o
+                0x0000000000000320       0x24 src/c/task_manager.c.49.o
  .text.tasks_menu_select
-                0x0000000000000344      0x108 src/c/task_manager.c.41.o
+                0x0000000000000344      0x108 src/c/task_manager.c.49.o
  .text.detail_click_config_provider
-                0x000000000000044c       0x24 src/c/task_manager.c.41.o
+                0x000000000000044c       0x24 src/c/task_manager.c.49.o
  .text.detail_back_click_handler
-                0x0000000000000470        0x6 src/c/task_manager.c.41.o
+                0x0000000000000470        0x6 src/c/task_manager.c.49.o
  *fill*         0x0000000000000476        0x2 
  .text.lists_window_load
-                0x0000000000000478      0x130 src/c/task_manager.c.41.o
+                0x0000000000000478      0x130 src/c/task_manager.c.49.o
  .text.lists_menu_select
-                0x00000000000005a8      0x1b4 src/c/task_manager.c.41.o
+                0x00000000000005a8      0x1b4 src/c/task_manager.c.49.o
  .text.detail_select_click_handler
-                0x000000000000075c       0xd4 src/c/task_manager.c.41.o
+                0x000000000000075c       0xd4 src/c/task_manager.c.49.o
  .text.detail_window_unload
-                0x0000000000000830       0x58 src/c/task_manager.c.41.o
+                0x0000000000000830       0x58 src/c/task_manager.c.49.o
  .text.detail_window_load
-                0x0000000000000888       0xa8 src/c/task_manager.c.41.o
+                0x0000000000000888       0xa8 src/c/task_manager.c.49.o
  .text.tasks_menu_draw_row
-                0x0000000000000930       0x68 src/c/task_manager.c.41.o
+                0x0000000000000930       0x68 src/c/task_manager.c.49.o
  .text.lists_menu_draw_row
-                0x0000000000000998       0x50 src/c/task_manager.c.41.o
+                0x0000000000000998       0x50 src/c/task_manager.c.49.o
  .text.inbox_received_callback
-                0x00000000000009e8      0x1a4 src/c/task_manager.c.41.o
+                0x00000000000009e8      0x1a4 src/c/task_manager.c.49.o
  .text.startup.main
-                0x0000000000000b8c       0xf0 src/c/task_manager.c.41.o
+                0x0000000000000b8c       0xf0 src/c/task_manager.c.49.o
                 0x0000000000000b8c                main
  .text.app_event_loop
                 0x0000000000000c7c        0xc /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
@@ -1359,7 +1359,7 @@ LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolc
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x0000000000000e8c      0x889 src/c/task_manager.c.41.o
+                0x0000000000000e8c      0x889 src/c/task_manager.c.49.o
                                         0x8a0 (size before relaxing)
 
 .glue_7         0x0000000000001718        0x0
@@ -1385,16 +1385,16 @@ LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolc
  .data          0x0000000000001718        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crti.o
  .data          0x0000000000001718        0x4 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
                 0x0000000000001718                __dso_handle
- .data          0x000000000000171c       0xf0 src/c/task_manager.c.41.o
- .data          0x000000000000180c        0x0 aplite/appinfo.auto.c.41.o
- .data          0x000000000000180c        0x0 aplite/src/resource_ids.auto.c.41.o
- .data          0x000000000000180c        0x0 src/message_keys.auto.c.41.o
+ .data          0x000000000000171c       0xf0 src/c/task_manager.c.49.o
+ .data          0x000000000000180c        0x0 aplite/appinfo.auto.c.49.o
+ .data          0x000000000000180c        0x0 aplite/src/resource_ids.auto.c.49.o
+ .data          0x000000000000180c        0x0 src/message_keys.auto.c.49.o
  .data          0x000000000000180c        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
  .data          0x000000000000180c        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
  .data          0x000000000000180c        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtn.o
  *(.data.*)
  .data.rel.ro.local.task_lists_testing
-                0x000000000000180c       0x38 src/c/task_manager.c.41.o
+                0x000000000000180c       0x38 src/c/task_manager.c.49.o
 
 .igot.plt       0x0000000000001844        0x0
  .igot.plt      0x0000000000000000        0x0 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
@@ -1403,40 +1403,40 @@ LOAD /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolc
  *(.bss)
  *(.bss.*)
  .bss.selected_task_index
-                0x0000000000001844        0x4 src/c/task_manager.c.41.o
+                0x0000000000001844        0x4 src/c/task_manager.c.49.o
  .bss.s_detail_text
-                0x0000000000001848      0x100 src/c/task_manager.c.41.o
+                0x0000000000001848      0x100 src/c/task_manager.c.49.o
  .bss.s_lists_window
-                0x0000000000001948        0x4 src/c/task_manager.c.41.o
+                0x0000000000001948        0x4 src/c/task_manager.c.49.o
  .bss.s_tasks_menu
-                0x000000000000194c        0x4 src/c/task_manager.c.41.o
+                0x000000000000194c        0x4 src/c/task_manager.c.49.o
  .bss.tasks_count
-                0x0000000000001950        0x4 src/c/task_manager.c.41.o
+                0x0000000000001950        0x4 src/c/task_manager.c.49.o
  .bss.selected_list_index
-                0x0000000000001954        0x4 src/c/task_manager.c.41.o
- .bss.tasks     0x0000000000001958     0x2616 src/c/task_manager.c.41.o
+                0x0000000000001954        0x4 src/c/task_manager.c.49.o
+ .bss.tasks     0x0000000000001958     0x2616 src/c/task_manager.c.49.o
  *fill*         0x0000000000003f6e        0x2 
  .bss.s_lists_menu
-                0x0000000000003f70        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f70        0x4 src/c/task_manager.c.49.o
  .bss.current_state
-                0x0000000000003f74        0x1 src/c/task_manager.c.41.o
+                0x0000000000003f74        0x1 src/c/task_manager.c.49.o
  *fill*         0x0000000000003f75        0x3 
  .bss.s_tasks_window
-                0x0000000000003f78        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f78        0x4 src/c/task_manager.c.49.o
  .bss.s_detail_window
-                0x0000000000003f7c        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f7c        0x4 src/c/task_manager.c.49.o
  .bss.s_detail_text_layer
-                0x0000000000003f80        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f80        0x4 src/c/task_manager.c.49.o
  .bss.s_checkmark_bitmap
-                0x0000000000003f84        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f84        0x4 src/c/task_manager.c.49.o
  .bss.s_action_bar
-                0x0000000000003f88        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f88        0x4 src/c/task_manager.c.49.o
  .bss.task_lists_count
-                0x0000000000003f8c        0x4 src/c/task_manager.c.41.o
+                0x0000000000003f8c        0x4 src/c/task_manager.c.49.o
  .bss.detail_text.7579
-                0x0000000000003f90      0x100 src/c/task_manager.c.41.o
+                0x0000000000003f90      0x100 src/c/task_manager.c.49.o
  .bss.task_lists
-                0x0000000000004090      0x500 src/c/task_manager.c.41.o
+                0x0000000000004090      0x500 src/c/task_manager.c.49.o
 
 DISCARD
  libc.a(*)
@@ -1452,13 +1452,13 @@ OUTPUT(/Users/alanjohnson/Dev/claude-reminders/build/aplite/pebble-app.elf elf32
  .ARM.attributes
                 0x0000000000000019       0x29 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
  .ARM.attributes
-                0x0000000000000042       0x33 src/c/task_manager.c.41.o
+                0x0000000000000042       0x33 src/c/task_manager.c.49.o
  .ARM.attributes
-                0x0000000000000075       0x33 aplite/appinfo.auto.c.41.o
+                0x0000000000000075       0x33 aplite/appinfo.auto.c.49.o
  .ARM.attributes
-                0x00000000000000a8       0x33 aplite/src/resource_ids.auto.c.41.o
+                0x00000000000000a8       0x33 aplite/src/resource_ids.auto.c.49.o
  .ARM.attributes
-                0x00000000000000db       0x33 src/message_keys.auto.c.41.o
+                0x00000000000000db       0x33 src/message_keys.auto.c.49.o
  .ARM.attributes
                 0x000000000000010e       0x21 /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/current/sdk-core/pebble/aplite/lib/libpebble.a(tmp7jpKUopebble.o)
  .ARM.attributes
@@ -1469,55 +1469,55 @@ OUTPUT(/Users/alanjohnson/Dev/claude-reminders/build/aplite/pebble-app.elf elf32
 .comment        0x0000000000000000       0x4e
  .comment       0x0000000000000000       0x4e /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtbegin.o
                                          0x4f (size before relaxing)
- .comment       0x0000000000000000       0x4f src/c/task_manager.c.41.o
- .comment       0x0000000000000000       0x4f aplite/appinfo.auto.c.41.o
- .comment       0x0000000000000000       0x4f aplite/src/resource_ids.auto.c.41.o
- .comment       0x0000000000000000       0x4f src/message_keys.auto.c.41.o
+ .comment       0x0000000000000000       0x4f src/c/task_manager.c.49.o
+ .comment       0x0000000000000000       0x4f aplite/appinfo.auto.c.49.o
+ .comment       0x0000000000000000       0x4f aplite/src/resource_ids.auto.c.49.o
+ .comment       0x0000000000000000       0x4f src/message_keys.auto.c.49.o
  .comment       0x0000000000000000       0x4f /Users/alanjohnson/Library/Application Support/Pebble SDK/SDKs/4.9.77/toolchain/arm-none-eabi/bin/../lib/gcc/arm-none-eabi/4.7.2/thumb2/crtend.o
 
 .debug_info     0x0000000000000000     0x2599
- .debug_info    0x0000000000000000     0x20ff src/c/task_manager.c.41.o
- .debug_info    0x00000000000020ff      0x31a aplite/appinfo.auto.c.41.o
- .debug_info    0x0000000000002419       0x81 aplite/src/resource_ids.auto.c.41.o
- .debug_info    0x000000000000249a       0xff src/message_keys.auto.c.41.o
+ .debug_info    0x0000000000000000     0x20ff src/c/task_manager.c.49.o
+ .debug_info    0x00000000000020ff      0x31a aplite/appinfo.auto.c.49.o
+ .debug_info    0x0000000000002419       0x81 aplite/src/resource_ids.auto.c.49.o
+ .debug_info    0x000000000000249a       0xff src/message_keys.auto.c.49.o
 
 .debug_abbrev   0x0000000000000000      0x529
- .debug_abbrev  0x0000000000000000      0x403 src/c/task_manager.c.41.o
- .debug_abbrev  0x0000000000000403       0x9e aplite/appinfo.auto.c.41.o
- .debug_abbrev  0x00000000000004a1       0x44 aplite/src/resource_ids.auto.c.41.o
- .debug_abbrev  0x00000000000004e5       0x44 src/message_keys.auto.c.41.o
+ .debug_abbrev  0x0000000000000000      0x403 src/c/task_manager.c.49.o
+ .debug_abbrev  0x0000000000000403       0x9e aplite/appinfo.auto.c.49.o
+ .debug_abbrev  0x00000000000004a1       0x44 aplite/src/resource_ids.auto.c.49.o
+ .debug_abbrev  0x00000000000004e5       0x44 src/message_keys.auto.c.49.o
 
 .debug_loc      0x0000000000000000      0xbad
- .debug_loc     0x0000000000000000      0xbad src/c/task_manager.c.41.o
+ .debug_loc     0x0000000000000000      0xbad src/c/task_manager.c.49.o
 
 .debug_aranges  0x0000000000000000      0x108
  .debug_aranges
-                0x0000000000000000       0xc0 src/c/task_manager.c.41.o
+                0x0000000000000000       0xc0 src/c/task_manager.c.49.o
  .debug_aranges
-                0x00000000000000c0       0x18 aplite/appinfo.auto.c.41.o
+                0x00000000000000c0       0x18 aplite/appinfo.auto.c.49.o
  .debug_aranges
-                0x00000000000000d8       0x18 aplite/src/resource_ids.auto.c.41.o
+                0x00000000000000d8       0x18 aplite/src/resource_ids.auto.c.49.o
  .debug_aranges
-                0x00000000000000f0       0x18 src/message_keys.auto.c.41.o
+                0x00000000000000f0       0x18 src/message_keys.auto.c.49.o
 
 .debug_ranges   0x0000000000000000      0x228
- .debug_ranges  0x0000000000000000      0x228 src/c/task_manager.c.41.o
+ .debug_ranges  0x0000000000000000      0x228 src/c/task_manager.c.49.o
 
 .debug_line     0x0000000000000000      0x859
- .debug_line    0x0000000000000000      0x52a src/c/task_manager.c.41.o
- .debug_line    0x000000000000052a      0x15a aplite/appinfo.auto.c.41.o
- .debug_line    0x0000000000000684       0xee aplite/src/resource_ids.auto.c.41.o
- .debug_line    0x0000000000000772       0xe7 src/message_keys.auto.c.41.o
+ .debug_line    0x0000000000000000      0x52a src/c/task_manager.c.49.o
+ .debug_line    0x000000000000052a      0x15a aplite/appinfo.auto.c.49.o
+ .debug_line    0x0000000000000684       0xee aplite/src/resource_ids.auto.c.49.o
+ .debug_line    0x0000000000000772       0xe7 src/message_keys.auto.c.49.o
 
 .debug_str      0x0000000000000000     0x134a
- .debug_str     0x0000000000000000     0x1016 src/c/task_manager.c.41.o
+ .debug_str     0x0000000000000000     0x1016 src/c/task_manager.c.49.o
                                        0x10ff (size before relaxing)
- .debug_str     0x0000000000001016      0x22a aplite/appinfo.auto.c.41.o
+ .debug_str     0x0000000000001016      0x22a aplite/appinfo.auto.c.49.o
                                         0x31c (size before relaxing)
- .debug_str     0x0000000000001240       0x3b aplite/src/resource_ids.auto.c.41.o
+ .debug_str     0x0000000000001240       0x3b aplite/src/resource_ids.auto.c.49.o
                                         0x102 (size before relaxing)
- .debug_str     0x000000000000127b       0xcf src/message_keys.auto.c.41.o
+ .debug_str     0x000000000000127b       0xcf src/message_keys.auto.c.49.o
                                         0x196 (size before relaxing)
 
 .debug_frame    0x0000000000000000      0x270
- .debug_frame   0x0000000000000000      0x270 src/c/task_manager.c.41.o
+ .debug_frame   0x0000000000000000      0x270 src/c/task_manager.c.49.o

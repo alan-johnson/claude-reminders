@@ -1,6 +1,7 @@
 {
     "sdkVersion": "3",
     "targetPlatforms": [
+        "flint",
         "emery",
         "diorite",
         "chalk",
