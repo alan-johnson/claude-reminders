@@ -21,19 +21,22 @@ typedef struct {
   char name[64];
 } TaskList;
 
+// structure of apple reminder id field
+//          8     -  4  -  4  -  4  - 12
+//example: 65A7AD7B-F211-4E3D-A892-E47CE8B038B5
 typedef struct {
-  char id[32];
-  int8_t idx;
-  char name[128];
-  int8_t priority;
-  char due_date[32];
-  bool completed;
-} Task;
+  char id[33];        // 33 bytes, 32 chars + null terminator
+  int8_t idx;         // 1 byte 
+  char name[128];     // 128 bytes
+  int8_t priority;    // 1 byte
+  char due_date[32];  // 32 bytes
+  bool completed;     // 1 byte
+} Task;               // total: 196 bytes
 
 // Storage
-static TaskList task_lists[20];
+static TaskList task_lists[20]; //1280 bytes
 static int task_lists_count = 0;
-static Task tasks[50];
+static Task tasks[50];  //9800 bytes
 static int tasks_count = 0;
 static int selected_list_index = 0;
 static int selected_task_index = 0;
@@ -285,13 +288,19 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       }
       
       case 2: { // Tasks in a list
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received task list");
+        
         // Parse task data from dictionary
         Tuple *id_tuple = dict_find(iterator, KEY_ID);
         Tuple *name_tuple = dict_find(iterator, KEY_NAME);
         Tuple *due_tuple = dict_find(iterator, KEY_DUE_DATE);
         Tuple *completed_tuple = dict_find(iterator, KEY_COMPLETED);
+        Tuple* idx_tuple = dict_find(iterator, KEY_IDX);
+        Tuple* priority_tuple = dict_find(iterator, KEY_PRIORITY);
 
         if (id_tuple && name_tuple && tasks_count < 50) {
+          APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, setting task data");
+        
           snprintf(tasks[tasks_count].id, sizeof(tasks[0].id),
                    "%s", id_tuple->value->cstring);
           snprintf(tasks[tasks_count].name, sizeof(tasks[0].name),
@@ -300,7 +309,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             snprintf(tasks[tasks_count].due_date, sizeof(tasks[0].due_date),
                      "%s", due_tuple->value->cstring);
           }
-          tasks[tasks_count].completed = completed_tuple ? completed_tuple->value->int32 : 0;
+          tasks[tasks_count].completed = completed_tuple ? completed_tuple->value->int16 : 0;
+          tasks[tasks_count].priority = priority_tuple ? priority_tuple->value->int16 : 0;
+          tasks[tasks_count].idx = idx_tuple ? idx_tuple->value->int16 : 0;
 
           tasks_count++;
           if (s_tasks_menu) menu_layer_reload_data(s_tasks_menu);
