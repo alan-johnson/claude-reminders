@@ -89,25 +89,23 @@ $ cp .build/apple/Products/Release/reminders /usr/local/bin/reminders
 
 ### Building the Watch App
 
-1. Fork the Pebble Reminders project from GitHub, https://github.com/alan-johnson/claude-reminders
+1. Fork the Claude Reminders project from GitHub, https://github.com/alan-johnson/claude-reminders
 
 1. **Using Pebble SDK locally:**
    ```bash
    # Create a new Pebble project
-   pebble new-project task-manager
-   cd task-manager
+   pebble new-project claude-reminders
+   cd claude-reminders
    
    # 
-   cp task_manager.c src/task_manager.c
-   cp index.js src/js/app.js
-   cp appinfo.json appinfo.json
+   edit index.js file to update DEFAULT_HOSTNAME value, `src/pkjs/index.js`
       
    # Build and install
    pebble build
    pebble install --phone <PHONE_IP>
    ```
 
-2. **Using CloudPebble:**
+2. **Using CloudPebble:** **these need updating**
    - Create a new project
    - Copy the contents of `task_manager.c` to the main C file
    - Add `app.js` as a new JavaScript file
@@ -175,10 +173,11 @@ Modify the `menu_draw_row_callback` function to change how items are displayed.
 
 ## Notes
 
-- The app uses AppMessage for communication between watch and phone
-- Data is not persisted on the watch - it's fetched fresh each time to ensure the data matches up with Reminders
-- Maximum message size limitations may affect very long task names/lists
-- Network connectivity required for all operations
+- The app uses AppMessage for communication between watch and phone.
+- Data is not persisted on the watch - it's fetched fresh each time to ensure the data matches up with Reminders.
+- Maximum message size limitations may affect very long task names/lists.
+- Network connectivity required for all operations.
+- The Python server script listens on port 5050. This is usually a private port so should be available. If you change this value, make sure you update DEFAULT_PORT value in the index.js script also.
 
 ## License
 
