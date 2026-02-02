@@ -97,7 +97,7 @@
 	// PebbleKit JS - Handles communication between watch and REST API
 	console.log('*** JavaScript file loaded! ***');
 	
-	var hostname = "127.0.0.1";
+	var hostname = "10.0.0.64";
 	var port = 5050;
 	var API_BASE = "http://" + hostname + ":" + port + "/tasks";
 	
