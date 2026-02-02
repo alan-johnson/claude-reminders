@@ -98,7 +98,7 @@
 	console.log('*** JavaScript file loaded! ***');
 	
 	var hostname = "localhost";
-	var port = 8080;
+	var port = 5050;
 	var API_BASE = "http://" + hostname + ":" + port + "/tasks";
 	
 	// Listen for when the app is ready
@@ -124,11 +124,13 @@
 	  console.log('AppMessage received!');
 	  console.log('Payload:', JSON.stringify(e.payload));
 	  var payload = e.payload;
+	  console.log('Payload = ' + JSON.stringify(payload));
 	
 	  // Acknowledge receipt of the message
 	  //e.ack();
 	
-	  if (payload[KEY_TYPE] !== undefined) {
+	  //if (payload[KEY_TYPE] !== undefined) {
+	    console.log('Processing payload with KEY_TYPE:', payload.KEY_TYPE);
 	    if (payload.KEY_TYPE === 1) {
 	      // Fetch task lists
 	      console.log('KEY_TYPE 1: Fetching task lists');
@@ -146,21 +148,22 @@
 	      completeTask(taskId, listName);
 	    }
 	  }
-	});
+	//}
+	);
 	
 	// Fetch task list names
 	function fetchTaskLists() {
 	  console.log('Fetching task lists from API...');
 	
 	  var xhr = new XMLHttpRequest();
-	  xhr.open('GET', API_BASE, true);
+	  xhr.open('GET', API_BASE + '/lists', true);
 	  xhr.onload = function() {
 	    if (xhr.readyState === 4) {
 	      if (xhr.status === 200) {
 	        try {
 	          var response = JSON.parse(xhr.responseText);
 	          console.log('Received lists:', JSON.stringify(response));
-	          sendTaskListsToWatch(response.lists);
+	          sendTaskListsToWatch(response);
 	        } catch (e) {
 	          console.log('Error parsing response:', e);
 	        }
