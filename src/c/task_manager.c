@@ -82,6 +82,7 @@ static void tasks_window_load(Window *window);
 static void tasks_window_unload(Window *window);
 static void lists_window_load(Window *window);
 static void lists_window_unload(Window *window);
+static void format_friendly_datetime(const char *iso_datetime, char *output, size_t output_size);
 #ifdef TESTING
 static void fetch_task_lists_testing(void);
 static void fetch_tasks_testing(void);
@@ -119,6 +120,45 @@ static void lists_menu_select(MenuLayer *menu_layer, MenuIndex *cell_index, void
   if (s_tasks_menu) menu_layer_reload_data(s_tasks_menu);
 }
 
+static void format_friendly_datetime(const char *iso_datetime, char *output, size_t output_size) {
+  // Month names as static const to reduce stack usage
+  static const char * const month_names[] = {
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  };
+
+  if (!iso_datetime || strlen(iso_datetime) < 10) {
+    snprintf(output, output_size, "No date");
+    return;
+  }
+
+  // Manual parsing to avoid sscanf issues on Pebble
+  // Expected format: "2026-02-15T14:30:00" or "2026-02-15"
+  int month = (iso_datetime[5] - '0') * 10 + (iso_datetime[6] - '0');
+  int day = (iso_datetime[8] - '0') * 10 + (iso_datetime[9] - '0');
+
+  // Validate month
+  if (month < 1 || month > 12) {
+    snprintf(output, output_size, "Invalid date");
+    return;
+  }
+
+  // Check if we have time component
+  if (strlen(iso_datetime) >= 16 && iso_datetime[10] == 'T') {
+    int hour = (iso_datetime[11] - '0') * 10 + (iso_datetime[12] - '0');
+    int min = (iso_datetime[14] - '0') * 10 + (iso_datetime[15] - '0');
+
+    const char *am_pm = (hour >= 12) ? "PM" : "AM";
+    int display_hour = (hour % 12 == 0) ? 12 : hour % 12;
+
+    snprintf(output, output_size, "%s %d, %d:%02d %s",
+             month_names[month - 1], day, display_hour, min, am_pm);
+  } else {
+    // Date only
+    snprintf(output, output_size, "%s %d", month_names[month - 1], day);
+  }
+}
+
 // Tasks menu callbacks
 static uint16_t tasks_menu_get_num_rows(MenuLayer *menu_layer, uint16_t section_index, void *data) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "tasks_menu_get_num_rows called");
@@ -129,7 +169,9 @@ static void tasks_menu_draw_row(GContext* ctx, const Layer *cell_layer, MenuInde
   APP_LOG(APP_LOG_LEVEL_DEBUG, "tasks_menu_draw_row called for row %d", cell_index->row);
   if (cell_index->row < tasks_count) {
     Task *task = &tasks[cell_index->row];
-    const char *subtitle = task->completed ? "✓ Completed" : task->due_date;
+    char friendly_date[32];
+    format_friendly_datetime(task->due_date, friendly_date, sizeof(friendly_date));
+    const char *subtitle = task->completed ? "✓ Completed" : friendly_date;
     menu_cell_basic_draw(ctx, cell_layer, task->name, subtitle, NULL);
   }
 }
