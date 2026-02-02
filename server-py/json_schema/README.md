@@ -20,10 +20,14 @@ Pebble Watch App (C)
 ## Task Object
 ```
 {
-  "id": "icloud-uid-123",
-  "title": "Buy milk",
-  "completed": false,
-  "due": "2026-01-23T17:00:00Z"
+  "dueDate": "2026-01-23T17:00:00Z"
+  "externalId": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXX", <- Hex digits
+  "id": 0,
+  "isCompleted": false,
+  "list": "Name of Reminders list for the task",
+  "notes": "Any notes",
+  "priority": 0,
+  "title": "Buy milk"
 }
 ```
 
