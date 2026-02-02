@@ -1,4 +1,6 @@
 #include <pebble.h>
+#include <time.h>
+#include <stdio.h>
 
 // Windows
 static Window *s_lists_window;
@@ -41,7 +43,8 @@ static int tasks_count = 0;
 static int selected_list_index = 0;
 static int selected_task_index = 0;
 static bool js_ready = false;  // set when JS signals it's ready
-
+// A buffer to hold the time and date string
+static char s_time_buffer[30]; // Large enough for "Day Month DD HH:MM"
 
 //#define TESTING 1
 #ifdef TESTING
@@ -82,7 +85,7 @@ static void tasks_window_load(Window *window);
 static void tasks_window_unload(Window *window);
 static void lists_window_load(Window *window);
 static void lists_window_unload(Window *window);
-static void format_friendly_datetime(const char *iso_datetime, char *output, size_t output_size);
+static time_t convert_iso_to_time_t(const char* iso_date_str);
 #ifdef TESTING
 static void fetch_task_lists_testing(void);
 static void fetch_tasks_testing(void);
@@ -120,43 +123,49 @@ static void lists_menu_select(MenuLayer *menu_layer, MenuIndex *cell_index, void
   if (s_tasks_menu) menu_layer_reload_data(s_tasks_menu);
 }
 
-static void format_friendly_datetime(const char *iso_datetime, char *output, size_t output_size) {
-  // Month names as static const to reduce stack usage
-  static const char * const month_names[] = {
-    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-  };
+static time_t convert_iso_to_time_t(const char* iso_date_str) {
+    if (!iso_date_str || strlen(iso_date_str) < 19) {
+        return (time_t)-1;
+    }
 
-  if (!iso_datetime || strlen(iso_datetime) < 10) {
-    snprintf(output, output_size, "No date");
-    return;
-  }
+    struct tm t = {0}; // Initialize to zero
 
-  // Manual parsing to avoid sscanf issues on Pebble
-  // Expected format: "2026-02-15T14:30:00" or "2026-02-15"
-  int month = (iso_datetime[5] - '0') * 10 + (iso_datetime[6] - '0');
-  int day = (iso_datetime[8] - '0') * 10 + (iso_datetime[9] - '0');
+    // Manual parsing to avoid sscanf issues on Pebble
+    // Expected format: "2026-02-15T14:30:00Z"
+    // Parse year (positions 0-3)
+    t.tm_year = (iso_date_str[0] - '0') * 1000 +
+                (iso_date_str[1] - '0') * 100 +
+                (iso_date_str[2] - '0') * 10 +
+                (iso_date_str[3] - '0');
 
-  // Validate month
-  if (month < 1 || month > 12) {
-    snprintf(output, output_size, "Invalid date");
-    return;
-  }
+    // Parse month (positions 5-6)
+    t.tm_mon = (iso_date_str[5] - '0') * 10 + (iso_date_str[6] - '0');
 
-  // Check if we have time component
-  if (strlen(iso_datetime) >= 16 && iso_datetime[10] == 'T') {
-    int hour = (iso_datetime[11] - '0') * 10 + (iso_datetime[12] - '0');
-    int min = (iso_datetime[14] - '0') * 10 + (iso_datetime[15] - '0');
+    // Parse day (positions 8-9)
+    t.tm_mday = (iso_date_str[8] - '0') * 10 + (iso_date_str[9] - '0');
 
-    const char *am_pm = (hour >= 12) ? "PM" : "AM";
-    int display_hour = (hour % 12 == 0) ? 12 : hour % 12;
+    // Parse hour (positions 11-12)
+    t.tm_hour = (iso_date_str[11] - '0') * 10 + (iso_date_str[12] - '0');
 
-    snprintf(output, output_size, "%s %d, %d:%02d %s",
-             month_names[month - 1], day, display_hour, min, am_pm);
-  } else {
-    // Date only
-    snprintf(output, output_size, "%s %d", month_names[month - 1], day);
-  }
+    // Parse minute (positions 14-15)
+    t.tm_min = (iso_date_str[14] - '0') * 10 + (iso_date_str[15] - '0');
+
+    // Parse second (positions 17-18)
+    t.tm_sec = (iso_date_str[17] - '0') * 10 + (iso_date_str[18] - '0');
+
+    // Adjust the tm structure fields to expected ranges:
+    // tm_year is years since 1900
+    t.tm_year -= 1900;
+    // tm_mon is 0-based (0-11)
+    t.tm_mon -= 1;
+
+    // Set daylight saving time flag
+    t.tm_isdst = -1; // Let mktime determine DST
+
+    // Convert to time_t
+    time_t timestamp = mktime(&t);
+
+    return timestamp;
 }
 
 // Tasks menu callbacks
@@ -169,9 +178,19 @@ static void tasks_menu_draw_row(GContext* ctx, const Layer *cell_layer, MenuInde
   APP_LOG(APP_LOG_LEVEL_DEBUG, "tasks_menu_draw_row called for row %d", cell_index->row);
   if (cell_index->row < tasks_count) {
     Task *task = &tasks[cell_index->row];
-    char friendly_date[32];
-    format_friendly_datetime(task->due_date, friendly_date, sizeof(friendly_date));
-    const char *subtitle = task->completed ? "✓ Completed" : friendly_date;
+    time_t due_time = convert_iso_to_time_t(task->due_date);
+    struct tm *local_time = localtime(&due_time);
+    
+    // Format the time and date based on user preference
+    if (clock_is_24h_style()) {
+      // 24-hour format: "Mon Feb 15 14:30"
+      strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %H:%M", local_time);
+    } else {
+      // 12-hour format with AM/PM: "Mon Feb 15 2:30 PM"
+      strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %I:%M %p", local_time);
+    }
+
+    const char *subtitle = task->completed ? "✓ Completed" : s_time_buffer;
     menu_cell_basic_draw(ctx, cell_layer, task->name, subtitle, NULL);
   }
 }
@@ -261,10 +280,22 @@ static void show_task_detail(void) {
   
   // Prepare the task details text
   Task *task = &tasks[selected_task_index];
+  time_t due_time = convert_iso_to_time_t(task->due_date);
+  struct tm *local_time = localtime(&due_time);
+  
+  // Format the time and date based on user preference
+  if (clock_is_24h_style()) {
+    // 24-hour format: "Mon Feb 15 14:30"
+    strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %H:%M", local_time);
+  } else {
+    // 12-hour format with AM/PM: "Mon Feb 15 2:30 PM"
+    strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %I:%M %p", local_time);
+  }
+
   snprintf(s_detail_text, sizeof(s_detail_text), 
            "Task: %s\n\nDue: %s\n\nStatus: %s\n\nSelect to mark complete", 
            task->name, 
-           task->due_date,
+           s_time_buffer,
            task->completed ? "Completed ✓" : "Pending");
   
   // Push window to stack (this will trigger the load callback which sets the text)
