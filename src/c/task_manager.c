@@ -227,7 +227,15 @@ static void detail_window_load(Window *window) {
   
   // Create text layer for task details
   s_detail_text_layer = text_layer_create(GRect(0, 10, bounds.size.w - ACTION_BAR_WIDTH, bounds.size.h - 20));
+  // if round display, center align text
+  //  otherwise left align
+  #if defined(PBL_ROUND)
+  // Specific code for Round display (180x180)
+  text_layer_set_text_alignment(s_detail_text_layer, GTextAlignmentCenter);
+  #elif defined(PBL_RECT)
+  // Specific code for Rectangular display
   text_layer_set_text_alignment(s_detail_text_layer, GTextAlignmentLeft);
+  #endif
   text_layer_set_overflow_mode(s_detail_text_layer, GTextOverflowModeWordWrap);
   text_layer_set_text(s_detail_text_layer, s_detail_text);
   layer_add_child(window_layer, text_layer_get_layer(s_detail_text_layer));
