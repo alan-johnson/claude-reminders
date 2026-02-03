@@ -1,0 +1,27 @@
+#ifndef STRINGS_H
+#define STRINGS_H
+
+// Localization strings for Claude Reminders app
+// Modify these strings to translate the app to different languages
+
+// Date and time strings
+#define STR_NO_DUE_DATE "No due date"
+#define STR_INVALID_DATE "Invalid date"
+
+// Task list strings
+#define STR_NO_TASKS "No tasks"
+#define STR_NO_TASKS_IN_LIST "No tasks in list"
+
+// Task status strings
+#define STR_COMPLETED "Completed"
+#define STR_PENDING "Pending"
+
+// Detail view labels
+#define STR_TASK_LABEL "Task: "
+#define STR_DUE_LABEL "Due: "
+#define STR_STATUS_LABEL "Status: "
+
+// Instructions
+#define STR_SELECT_TO_MARK_COMPLETE "Select to mark complete"
+
+#endif // STRINGS_H

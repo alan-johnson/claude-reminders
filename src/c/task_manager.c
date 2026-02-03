@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include <time.h>
 #include <stdio.h>
+#include "strings.h"
 
 // Windows
 static Window *s_lists_window;
@@ -75,9 +76,6 @@ static const char *task_lists_testing[] = {
 #define KEY_LIST_NAME 5
 #define KEY_IDX 6
 #define KEY_PRIORITY 7
-
-// Localization strings
-#define STR_NO_DUE_DATE "No due date"
 
 // Function prototypes
 static void fetch_task_lists(void);
@@ -187,7 +185,7 @@ static void convert_iso_to_friendly_date(const char* iso_date_str, char* buffer,
   if (timestamp == (time_t)-1) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "convert_iso_to_time_t failed for date: %s", iso_date_str);
 
-    snprintf(buffer, buffer_size, "Invalid date");
+    snprintf(buffer, buffer_size, STR_INVALID_DATE);
     return;
   }
 
@@ -215,7 +213,7 @@ static void tasks_menu_draw_row(GContext* ctx, const Layer *cell_layer, MenuInde
   APP_LOG(APP_LOG_LEVEL_DEBUG, "tasks_menu_draw_row called for row %d", cell_index->row);
   
   if (tasks_count == 0) {
-    menu_cell_basic_draw(ctx, cell_layer, "No tasks", "No tasks in list", NULL);
+    menu_cell_basic_draw(ctx, cell_layer, STR_NO_TASKS, STR_NO_TASKS_IN_LIST, NULL);
     return;
   }
 
@@ -236,7 +234,7 @@ static void tasks_menu_draw_row(GContext* ctx, const Layer *cell_layer, MenuInde
     }
     */
 
-    const char *subtitle = task->completed ? "Completed" : s_time_buffer;
+    const char *subtitle = task->completed ? STR_COMPLETED : s_time_buffer;
     menu_cell_basic_draw(ctx, cell_layer, task->name, subtitle, NULL);
   }
 }
@@ -366,8 +364,10 @@ static void detail_select_click_handler(ClickRecognizerRef recognizer, void *con
     static char detail_text[256];
     convert_iso_to_friendly_date(task->due_date, s_time_buffer, sizeof(s_time_buffer));
     snprintf(detail_text, sizeof(detail_text),
-             "Task: %s\n\nDue: %s\n\nStatus: Completed",
-             task->name, s_time_buffer);
+             "%s%s\n\n%s%s\n\n%s%s",
+             STR_TASK_LABEL, task->name,
+             STR_DUE_LABEL, s_time_buffer,
+             STR_STATUS_LABEL, STR_COMPLETED);
     text_layer_set_text(s_detail_text_layer, detail_text);
 
     // Update scroll layer content size
@@ -448,11 +448,12 @@ static void show_task_detail(void) {
   // Convert due date to friendly format (handles "No due date" case)
   convert_iso_to_friendly_date(task->due_date, s_time_buffer, sizeof(s_time_buffer));
 
-  snprintf(s_detail_text, sizeof(s_detail_text), 
-           "Task: %s\n\nDue: %s\n\nStatus: %s\n\nSelect to mark complete", 
-           task->name, 
-           s_time_buffer,
-           task->completed ? "Completed" : "Pending");
+  snprintf(s_detail_text, sizeof(s_detail_text),
+           "%s%s\n\n%s%s\n\n%s%s\n\n%s",
+           STR_TASK_LABEL, task->name,
+           STR_DUE_LABEL, s_time_buffer,
+           STR_STATUS_LABEL, task->completed ? STR_COMPLETED : STR_PENDING,
+           STR_SELECT_TO_MARK_COMPLETE);
   
   // Push window to stack (this will trigger the load callback which sets the text and click config)
   window_stack_push(s_detail_window, true);
