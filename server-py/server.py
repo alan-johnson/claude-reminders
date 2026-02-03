@@ -203,33 +203,18 @@ def get_task_by_list(listname):
 
 @app.route("/tasks/complete", methods=["POST"])
 def complete():
-    #data = request.json
-    #print("Data received, request.json:" + str(data))
-    # success = complete_task(data["id"])
-    # return jsonify({"command": "complete"})
     # Get JSON payload
     data = request.get_json()
     print("Data received: request.get_json" + str(data))
 
-    # Print JSON to console for testing
-    #print("Received JSON:", data)
-
-    # Simple response
-#    return jsonify({
-#        "status": "success",
-#        "received": data
-#    }), 200
+    # create command to send to reminders CLI
     cmd = "complete"
     task_id = data.get("taskId") if data else None
-    print("Complete taskId: " + str(task_id))
     listname = data.get("listName") if data else None
-    print("Complete listName: " + str(listname))
-    #encoded_string = '"' + listname + '"'
-    #command = ["reminders", cmd, encoded_string, task_id] # reminders command and return as json
+    # wrap the list name in quotes to handle spaces
     encoded_string = shlex.quote(listname)
     command = f"reminders {cmd} {encoded_string} {task_id}"
-    print("Running command: " + str(command))
-
+   
     try:
         # Execute the command
         result = subprocess.run(
@@ -240,7 +225,6 @@ def complete():
             check=True           # Raise exception if the command fails
         )
 
-        #return json.loads(result.stdout)
         return result.stdout
 
     except subprocess.CalledProcessError as e:
@@ -271,37 +255,29 @@ def complete():
 
 @app.route("/tasks/uncomplete", methods=["POST"])
 def uncomplete():
-    data = request.json
-    # success = complete_task(data["id"])
-    # return jsonify({"command": "uncomplete"})
     # Get JSON payload
     data = request.get_json()
+    print("Data received: request.get_json" + str(data))
 
-    # Print JSON to console for testing
-    #print("Received JSON:", data)
-
-    # Simple response
-#    return jsonify({
-#        "status": "success",
-#        "received": data
-#    }), 200
+    # create command to send to reminders CLI
     cmd = "uncomplete"
-    task_id = data.get("task_id") if data else None
-    listname = data.get("list") if data else None
-    encoded_string = listname
- 
-    command = ["reminders", cmd, encoded_string, task_id] # reminders command and return as json
-    
+    task_id = data.get("taskId") if data else None
+    listname = data.get("listName") if data else None
+    # wrap the list name in quotes to handle spaces
+    encoded_string = shlex.quote(listname)
+    command = f"reminders {cmd} {encoded_string} {task_id}"
+   
     try:
         # Execute the command
         result = subprocess.run(
             command,
+            shell=True,
             capture_output=True, # Capture stdout and stderr
             text=True,           # Decode output as string (Python 3.7+)
             check=True           # Raise exception if the command fails
         )
 
-        return json.loads(result.stdout)
+        return result.stdout
 
     except subprocess.CalledProcessError as e:
         # Handle errors if the command returns a non-zero exit code
