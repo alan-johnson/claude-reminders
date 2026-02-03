@@ -444,17 +444,9 @@ static void show_task_detail(void) {
   
   // Prepare the task details text
   Task *task = &tasks[selected_task_index];
-  time_t due_time = convert_iso_to_time_t(task->due_date);
-  struct tm *local_time = localtime(&due_time);
-  
-  // Format the time and date based on user preference
-  if (clock_is_24h_style()) {
-    // 24-hour format: "Mon Feb 15 14:30"
-    strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %H:%M", local_time);
-  } else {
-    // 12-hour format with AM/PM: "Mon Feb 15 2:30 PM"
-    strftime(s_time_buffer, sizeof(s_time_buffer), "%a %b %d %I:%M %p", local_time);
-  }
+
+  // Convert due date to friendly format (handles "No due date" case)
+  convert_iso_to_friendly_date(task->due_date, s_time_buffer, sizeof(s_time_buffer));
 
   snprintf(s_detail_text, sizeof(s_detail_text), 
            "Task: %s\n\nDue: %s\n\nStatus: %s\n\nSelect to mark complete", 
