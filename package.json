@@ -1,10 +1,11 @@
 {
-  "name": "pebrems",
+  "name": "claude-reminders",
   "author": "Handsbreadth",
   "version": "1.0.0",
   "private": true,
   "keywords": [
-    "pebble-app"
+    "pebble-app",
+    "reminders"
   ],
   "dependencies": {},
   "pebble": {
@@ -22,7 +23,7 @@
       "configurable"
     ],
     "projectType": "native",
-    "displayName": "Pebble Reminders",
+    "displayName": "Claude Reminders",
     "uuid": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
     "watchapp": {
       "watchface": false,
