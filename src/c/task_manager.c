@@ -25,7 +25,7 @@ int selected_list_index = 0;
 int selected_task_index = 0;
 bool js_ready = false;  // set when JS signals it's ready
 bool tasks_loading = false;  // Flag to track if tasks are being fetched
-char s_time_buffer[30]; // Large enough for "Day Month DD HH:MM"
+char s_time_buffer[32]; // Buffer for formatted dates
 
 //#define TESTING 1
 #ifdef TESTING
@@ -141,10 +141,10 @@ void convert_iso_to_friendly_date(const char* iso_date_str, char* buffer, size_t
     return;
   }
 
+  // Parse ISO format date
   time_t timestamp = convert_iso_to_time_t(iso_date_str);
   if (timestamp == (time_t)-1) {
     APP_LOG(APP_LOG_LEVEL_DEBUG, "convert_iso_to_time_t failed for date: %s", iso_date_str);
-
     snprintf(buffer, buffer_size, STR_INVALID_DATE);
     return;
   }

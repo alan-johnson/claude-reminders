@@ -52,7 +52,7 @@ extern int selected_task_index;
 extern AppState current_state;
 extern bool js_ready;
 extern bool tasks_loading;  // Flag to track if tasks are being fetched
-extern char s_time_buffer[30];
+extern char s_time_buffer[32];  // Buffer for formatted dates
 
 // Shared utility functions
 time_t convert_iso_to_time_t(const char* iso_date_str);
