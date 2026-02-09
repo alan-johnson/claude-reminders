@@ -2,7 +2,7 @@
 console.log('*** JavaScript file loaded! ***');
 
 // Configuration - can be overridden via localStorage
-var DEFAULT_HOSTNAME = "10.0.0.64";
+var DEFAULT_HOSTNAME = "localhost";
 var DEFAULT_PORT = 3000;
 var DEFAULT_PROVIDER = "provider=apple"
 
@@ -42,7 +42,6 @@ Pebble.addEventListener('ready', function(e) {
 Pebble.addEventListener('appmessage', function(e) {
   console.warn('=== APPMESSAGE EVENT FIRED ===');
   console.log('AppMessage received!');
-  console.log('Payload:', JSON.stringify(e.payload));
   var payload = e.payload;
   console.log('Payload = ' + JSON.stringify(payload));
 
@@ -95,25 +94,39 @@ function fetchTaskLists() {
   xhr.send();
 }
 
-// Send task lists to the watch
+// Send task lists to the watch sequentially with delays to avoid APP_MSG_BUSY
 function sendTaskListsToWatch(lists) {
-  // Send lists one at a time due to message size limitations
-  for (var i = 0; i < lists.length; i++) {
+  var currentIndex = 0;
+
+  function sendNextList() {
+    if (currentIndex >= lists.length) {
+      console.log('All task lists sent successfully');
+      return;
+    }
+
     var dict = {
       'KEY_TYPE': 1,
-      'KEY_ID': lists[i].id || i, // Use index as fallback ID
-      'KEY_NAME': lists[i].name || lists[i]
+      'KEY_ID': lists[currentIndex].id || currentIndex,
+      'KEY_NAME': lists[currentIndex].name || lists[currentIndex]
     };
-    
+
     Pebble.sendAppMessage(dict,
       function(e) {
-        console.log('Task list sent to Pebble successfully!');
+        console.log('Task list ' + (currentIndex + 1) + '/' + lists.length + ' sent successfully');
+        currentIndex++;
+        // Wait 100ms before sending next message to avoid APP_MSG_BUSY
+        setTimeout(sendNextList, 100);
       },
       function(e) {
-        console.log('Error sending task list to Pebble!');
+        console.log('Error sending task list ' + (currentIndex + 1) + ', retrying...');
+        // Retry after 200ms on error
+        setTimeout(sendNextList, 200);
       }
     );
   }
+
+  // Start sending lists
+  sendNextList();
 }
 
 // Fetch tasks for a specific list
@@ -121,14 +134,16 @@ function fetchTasks(listId) {
   console.log('Fetching tasks for list from API: ' + listId);
 
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', API_BASE + '/lists/' + encodeURIComponent(listId) +'/tasks' + DEFAULT_PROVIDER, true);
+  var url = API_BASE + '/lists/' + encodeURIComponent(listId) + '/tasks?' + DEFAULT_PROVIDER;
+  console.log('Request URL:', url);
+  xhr.open('GET', url, true);
   xhr.onload = function() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         try {
           var response = JSON.parse(xhr.responseText);
           console.log('Received tasks:', JSON.stringify(response));
-          sendTasksToWatch(response);
+          sendTasksToWatch(response.tasks);
         } catch (e) {
           console.log('Error parsing response:', e);
         }
@@ -140,31 +155,67 @@ function fetchTasks(listId) {
   xhr.send();
 }
 
-// Send tasks to the watch
+// Send tasks to the watch sequentially with delays to avoid APP_MSG_BUSY
 function sendTasksToWatch(tasks) {
-  // Send tasks one at a time
-  for (var i = 0; i < tasks.length; i++) {
-    var task = tasks[i];
+  // If no tasks, send a message to clear loading state
+  if (!tasks || tasks.length === 0) {
+    console.log('No tasks to send, sending empty message to clear loading state');
+    var dict = {
+      'KEY_TYPE': 2,
+      'KEY_ID': '',
+      'KEY_NAME': '',
+      'KEY_DUE_DATE': 'No due date',
+      'KEY_COMPLETED': 0,
+      'KEY_NOTES': ''
+    };
+
+    Pebble.sendAppMessage(dict,
+      function(e) {
+        console.log('Empty task list message sent to Pebble successfully!');
+      },
+      function(e) {
+        console.log('Error sending empty task list message to Pebble!');
+      }
+    );
+    return;
+  }
+
+  // Send tasks one at a time with delay to avoid APP_MSG_BUSY
+  var currentIndex = 0;
+
+  function sendNextTask() {
+    if (currentIndex >= tasks.length) {
+      console.log('All tasks sent successfully');
+      return;
+    }
+
+    var task = tasks[currentIndex];
     var dict = {
       'KEY_TYPE': 2,
       'KEY_ID': task.id || '',
-      //'KEY_IDX': task.id || 0,
       'KEY_NAME': task.name || '',
-      //'KEY_PRIORITY': task.priority || 0,
       'KEY_DUE_DATE': task.dueDate || 'No due date',
       'KEY_COMPLETED': task.completed ? 1 : 0,
       'KEY_NOTES': task.notes || ''
     };
-    
+
     Pebble.sendAppMessage(dict,
       function(e) {
-        console.log('Task sent to Pebble successfully!');
+        console.log('Task ' + (currentIndex + 1) + '/' + tasks.length + ' sent successfully');
+        currentIndex++;
+        // Wait 100ms before sending next message to avoid APP_MSG_BUSY
+        setTimeout(sendNextTask, 100);
       },
       function(e) {
-        console.log('Error sending task to Pebble!');
+        console.log('Error sending task ' + (currentIndex + 1) + ', retrying...');
+        // Retry after 200ms on error
+        setTimeout(sendNextTask, 200);
       }
     );
   }
+
+  // Start sending tasks
+  sendNextTask();
 }
 
 // Complete a task

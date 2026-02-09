@@ -198,6 +198,7 @@ app.get('/api/lists/:listId/tasks', async (req, res) => {
     };
 
     const tasks = await provider.getTasks(listId, options);
+    console.log(`Fetched ${tasks.length} tasks for list ${listId} from provider ${providerName}`);
     res.json({
       provider: providerName,
       listId,

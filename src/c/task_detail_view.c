@@ -118,7 +118,7 @@ static void detail_select_click_handler(ClickRecognizerRef recognizer, void *con
   Task *task = &tasks[selected_task_index];
   if (!task->completed) {
     // Mark task as complete
-    complete_task(task->idx, task_lists[selected_list_index].name);
+    complete_task(task->id, task_lists[selected_list_index].name);
     task->completed = true;
 
     // Update display

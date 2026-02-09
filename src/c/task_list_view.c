@@ -18,7 +18,12 @@ static void tasks_menu_draw_row(GContext* ctx, const Layer *cell_layer, MenuInde
   APP_LOG(APP_LOG_LEVEL_DEBUG, "tasks_menu_draw_row called for row %d", cell_index->row);
 
   if (tasks_count == 0) {
-    menu_cell_basic_draw(ctx, cell_layer, STR_NO_TASKS, STR_NO_TASKS_IN_LIST, NULL);
+    // Show loading message if we're waiting for tasks, otherwise show "no tasks"
+    if (tasks_loading) {
+      menu_cell_basic_draw(ctx, cell_layer, STR_LOADING_TASKS, STR_LOADING, NULL);
+    } else {
+      menu_cell_basic_draw(ctx, cell_layer, STR_NO_TASKS, STR_NO_TASKS_IN_LIST, NULL);
+    }
     return;
   }
 

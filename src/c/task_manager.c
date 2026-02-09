@@ -12,13 +12,19 @@ static MenuLayer *s_lists_menu;
 
 // Global state (definitions for variables declared extern in task_manager.h)
 AppState current_state = STATE_TASK_LISTS;
-TaskList task_lists[20]; //1280 bytes
+TaskList task_lists[20]; // 20 × 101 = 2,020 bytes
 int task_lists_count = 0;
-Task tasks[50];  //9800 bytes
+// Reduce tasks array for Aplite to fit in 24KB RAM
+#if defined(PBL_PLATFORM_APLITE)
+Task tasks[20];  // 20 × 456 = 9,120 bytes for Aplite
+#else
+Task tasks[50];  // 50 × 456 = 22,800 bytes for other platforms
+#endif
 int tasks_count = 0;
 int selected_list_index = 0;
 int selected_task_index = 0;
 bool js_ready = false;  // set when JS signals it's ready
+bool tasks_loading = false;  // Flag to track if tasks are being fetched
 char s_time_buffer[30]; // Large enough for "Day Month DD HH:MM"
 
 //#define TESTING 1
@@ -68,15 +74,16 @@ static void lists_menu_select(MenuLayer *menu_layer, MenuIndex *cell_index, void
   selected_list_index = cell_index->row;
   current_state = STATE_TASKS;
 
-  // Reset tasks count before fetching new list
+  // Reset tasks count and set loading flag before fetching new list
   tasks_count = 0;
+  tasks_loading = true;
 
   window_stack_push(task_list_view_get_window(), true);
 
   #ifdef TESTING
     fetch_tasks_testing();
   #else
-    fetch_tasks(task_lists[selected_list_index].name);
+    fetch_tasks(task_lists[selected_list_index].id);
   #endif
   MenuLayer *tasks_menu = task_list_view_get_menu();
   if (tasks_menu) menu_layer_reload_data(tasks_menu);
@@ -197,8 +204,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       }
       case 1: { // Task list names
         APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received list name");
+        
+        Tuple *id_tuple = dict_find(iterator, KEY_ID);
         Tuple *name_tuple = dict_find(iterator, KEY_NAME);
         if (name_tuple && task_lists_count < 20) {
+          snprintf(task_lists[task_lists_count].id, sizeof(task_lists[0].id),
+                   "%s", id_tuple->value->cstring);
           snprintf(task_lists[task_lists_count].name, sizeof(task_lists[0].name),
                    "%s", name_tuple->value->cstring);
           APP_LOG(APP_LOG_LEVEL_DEBUG, "added list name: %s", task_lists[task_lists_count].name);
@@ -210,18 +221,32 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       
       case 2: { // Tasks in a list
         APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received task list");
-        
+
+        // Clear loading flag when receiving any task message
+        if (tasks_loading) {
+          tasks_loading = false;
+        }
+
         // Parse task data from dictionary
         Tuple *id_tuple = dict_find(iterator, KEY_ID);
         Tuple *name_tuple = dict_find(iterator, KEY_NAME);
         Tuple *due_tuple = dict_find(iterator, KEY_DUE_DATE);
         Tuple *completed_tuple = dict_find(iterator, KEY_COMPLETED);
-        Tuple* idx_tuple = dict_find(iterator, KEY_IDX);
-        Tuple* priority_tuple = dict_find(iterator, KEY_PRIORITY);
+        Tuple *idx_tuple = dict_find(iterator, KEY_IDX);
+        Tuple *priority_tuple = dict_find(iterator, KEY_PRIORITY);
+
+        // Check if this is an empty task message (used to signal end of empty list)
+        if (name_tuple && strlen(name_tuple->value->cstring) == 0) {
+          APP_LOG(APP_LOG_LEVEL_DEBUG, "Received empty task list message");
+          // Just reload the menu to show "No tasks" instead of "Loading..."
+          MenuLayer *tasks_menu = task_list_view_get_menu();
+          if (tasks_menu) menu_layer_reload_data(tasks_menu);
+          break;
+        }
 
         if (id_tuple && name_tuple && tasks_count < 50) {
           APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, setting task data");
-        
+
           snprintf(tasks[tasks_count].id, sizeof(tasks[0].id),
                    "%s", id_tuple->value->cstring);
           snprintf(tasks[tasks_count].name, sizeof(tasks[0].name),
@@ -239,7 +264,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
           if (tasks_menu) menu_layer_reload_data(tasks_menu);
         } else {
           APP_LOG(APP_LOG_LEVEL_ERROR, "Missing task data or task limit reached");
-          tasks_count = 0;
         } 
         break;
       }
@@ -388,8 +412,8 @@ void fetch_task_lists(void) {
   }
 }
 
-void fetch_tasks(const char *list_name) {
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_tasks called for list: %s", list_name);
+void fetch_tasks(const char *list_id) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_tasks called for list: %s", list_id);
 
   DictionaryIterator *iter;
   AppMessageResult result = app_message_outbox_begin(&iter);
@@ -399,11 +423,10 @@ void fetch_tasks(const char *list_name) {
   }
   dict_write_uint8(iter, KEY_TYPE, 2); // Request tasks
   dict_write_cstring(iter, KEY_ID, list_id);
-  dict_write_cstring(iter, KEY_LIST_NAME, list_name);
   app_message_outbox_send();
 }
 
-void complete_task(uint8_t task_id, const char *list_name) {
+void complete_task(const char *task_id, const char *list_name) {
   DictionaryIterator *iter;
   AppMessageResult result = app_message_outbox_begin(&iter);
   if (result != APP_MSG_OK) {

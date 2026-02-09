@@ -47,7 +47,8 @@
       "KEY_COMPLETED": 4,
       "KEY_LIST_NAME": 5,
       "KEY_IDX": 6,
-      "KEY_PRIORITY": 7
+      "KEY_PRIORITY": 7,
+      "KEY_NOTES": 8
     }
   }
 }

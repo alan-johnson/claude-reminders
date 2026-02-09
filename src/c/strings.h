@@ -11,6 +11,8 @@
 // Task list strings
 #define STR_NO_TASKS "No tasks"
 #define STR_NO_TASKS_IN_LIST "No tasks in list"
+#define STR_LOADING_TASKS "Loading tasks..."
+#define STR_LOADING "Please wait"
 
 // Task status strings
 #define STR_COMPLETED "Completed"
