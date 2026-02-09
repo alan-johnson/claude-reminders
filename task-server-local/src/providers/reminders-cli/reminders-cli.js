@@ -4,8 +4,8 @@ const path = require('path');
 class RemindersCliProvider {
   constructor() {
     this.name = 'Reminders CLI';
-    // Path to the reminders executable
-    this.cliPath = path.join(__dirname, 'reminders', 'reminders');
+    // Path to the reminders executable (now in same directory)
+    this.cliPath = path.join(__dirname, 'reminders');
     // Cache list names to IDs mapping (CLI uses names, API uses IDs)
     this.listNameToId = {};
     this.listIdToName = {};

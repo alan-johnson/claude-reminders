@@ -22,7 +22,7 @@ When you first download or copy the `reminders` executable, macOS will mark it w
 **To fix this, run the following command:**
 
 ```bash
-xattr -d com.apple.quarantine task-server-local/src/providers/reminders/reminders
+xattr -d com.apple.quarantine task-server-local/src/providers/reminders-cli/reminders
 ```
 
 This removes the quarantine flag and allows the executable to run.
@@ -33,10 +33,10 @@ Test that the reminders CLI is working correctly:
 
 ```bash
 # List all reminder lists
-task-server-local/src/providers/reminders/reminders show-lists
+task-server-local/src/providers/reminders-cli/reminders show-lists
 
 # Show reminders in a specific list (JSON format)
-task-server-local/src/providers/reminders/reminders show "Reminders" --format json
+task-server-local/src/providers/reminders-cli/reminders show "Reminders" --format json
 ```
 
 If you see your reminder lists and tasks, the CLI is working correctly!
@@ -200,7 +200,7 @@ The reminders CLI returns dates in ISO 8601 format with UTC timezone (e.g., `202
 
 If you see a permission denied error:
 ```bash
-chmod +x task-server-local/src/providers/reminders/reminders
+chmod +x task-server-local/src/providers/reminders-cli/reminders
 ```
 
 ### "macOS Cannot Verify" Dialog

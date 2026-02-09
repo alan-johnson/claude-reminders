@@ -57,17 +57,17 @@ An alternative provider for Apple Reminders that uses a command-line interface i
 
 1. Remove the macOS quarantine attribute from the executable:
    ```bash
-   xattr -d com.apple.quarantine src/providers/reminders/reminders
+   xattr -d com.apple.quarantine src/providers/reminders-cli/reminders
    ```
 
 2. Verify it works:
    ```bash
-   src/providers/reminders/reminders show-lists
+   src/providers/reminders-cli/reminders show-lists
    ```
 
 3. Grant permissions when prompted (System Settings > Privacy & Security > Automation)
 
-For detailed documentation, see [src/providers/reminders/README.md](src/providers/reminders/README.md)
+For detailed documentation, see [src/providers/reminders-cli/README.md](src/providers/reminders-cli/README.md)
 
 ### Microsoft Tasks
 
@@ -350,10 +350,10 @@ await fetch(
 ### Reminders CLI
 
 **Problem:** "macOS cannot verify that this app is free from malware"
-- **Solution:** Run `xattr -d com.apple.quarantine src/providers/reminders/reminders`
+- **Solution:** Run `xattr -d com.apple.quarantine src/providers/reminders-cli/reminders`
 
 **Problem:** "Permission denied"
-- **Solution:** Run `chmod +x src/providers/reminders/reminders`
+- **Solution:** Run `chmod +x src/providers/reminders-cli/reminders`
 
 **Problem:** "Command failed" or "No reminder found"
 - **Solution:** Make sure the list name is correct (case-sensitive) and grant permissions in System Settings > Privacy & Security > Automation
@@ -381,13 +381,19 @@ task-server/
 ├── src/
 │   ├── server.js                 # Main Express server
 │   └── providers/
-│       ├── apple.js              # Apple Reminders integration (AppleScript)
-│       ├── reminders-cli.js      # Apple Reminders integration (CLI)
-│       ├── reminders/
+│       ├── apple/
+│       │   ├── apple.js          # Apple Reminders provider (AppleScript)
+│       │   └── README.md         # Apple provider documentation
+│       ├── reminders-cli/
+│       │   ├── reminders-cli.js  # Reminders CLI provider
 │       │   ├── reminders         # CLI executable
 │       │   └── README.md         # CLI provider documentation
-│       ├── microsoft.js          # Microsoft Tasks integration
-│       └── google.js             # Google Tasks integration
+│       ├── microsoft/
+│       │   ├── microsoft.js      # Microsoft Tasks provider
+│       │   └── README.md         # Microsoft provider documentation
+│       └── google/
+│           ├── google.js         # Google Tasks provider
+│           └── README.md         # Google provider documentation
 ├── package.json
 ├── .env.example
 └── README.md

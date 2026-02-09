@@ -3,10 +3,10 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const AppleRemindersProvider = require('./providers/apple');
-const MicrosoftTasksProvider = require('./providers/microsoft');
-const GoogleTasksProvider = require('./providers/google');
-const RemindersCliProvider = require('./providers/reminders-cli');
+const AppleRemindersProvider = require('./providers/apple/apple');
+const MicrosoftTasksProvider = require('./providers/microsoft/microsoft');
+const GoogleTasksProvider = require('./providers/google/google');
+const RemindersCliProvider = require('./providers/reminders-cli/reminders-cli');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
