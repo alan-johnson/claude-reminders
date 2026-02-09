@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const AppleRemindersProvider = require('./providers/apple');
 const MicrosoftTasksProvider = require('./providers/microsoft');
 const GoogleTasksProvider = require('./providers/google');
+const RemindersCliProvider = require('./providers/reminders-cli');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -27,7 +28,8 @@ const providers = {
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     redirectUri: process.env.GOOGLE_REDIRECT_URI
-  })
+  }),
+  'reminders-cli': new RemindersCliProvider()
 };
 
 // Session storage for tokens (in production, use a proper session store)
@@ -47,8 +49,8 @@ function getProvider(req) {
 
 // Initialize provider with auth if needed
 async function initializeProvider(provider, providerName, req) {
-  if (providerName === 'apple') {
-    // Apple Reminders doesn't need initialization
+  if (providerName === 'apple' || providerName === 'reminders-cli') {
+    // Apple Reminders and Reminders CLI don't need initialization
     return;
   }
   
@@ -96,7 +98,7 @@ app.get('/health', (req, res) => {
 // Get available providers
 app.get('/api/providers', (req, res) => {
   res.json({
-    providers: ['apple', 'microsoft', 'google'],
+    providers: ['apple', 'microsoft', 'google', 'reminders-cli'],
     default: process.env.DEFAULT_PROVIDER || 'apple'
   });
 });

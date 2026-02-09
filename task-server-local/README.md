@@ -5,6 +5,7 @@ A REST API server that integrates with Apple Reminders, Microsoft Tasks, and Goo
 ## Features
 
 - ✅ **Apple Reminders** - Native integration via AppleScript (no authentication needed)
+- ✅ **Reminders CLI** - Alternative Apple Reminders integration via command-line tool (no authentication needed)
 - ✅ **Microsoft Tasks** - Integration via Microsoft Graph API
 - ✅ **Google Tasks** - Integration via Google Tasks API
 - ✅ Unified REST API for all providers
@@ -47,6 +48,26 @@ A REST API server that integrates with Apple Reminders, Microsoft Tasks, and Goo
 No configuration needed! Apple Reminders works out of the box on macOS using AppleScript.
 
 The first time you run the server, macOS may prompt you to grant Terminal (or your terminal app) access to Reminders. Click "OK" to allow access.
+
+### Reminders CLI
+
+An alternative provider for Apple Reminders that uses a command-line interface instead of AppleScript. This can be useful if you encounter issues with AppleScript permissions.
+
+**Setup:**
+
+1. Remove the macOS quarantine attribute from the executable:
+   ```bash
+   xattr -d com.apple.quarantine src/providers/reminders/reminders
+   ```
+
+2. Verify it works:
+   ```bash
+   src/providers/reminders/reminders show-lists
+   ```
+
+3. Grant permissions when prompted (System Settings > Privacy & Security > Automation)
+
+For detailed documentation, see [src/providers/reminders/README.md](src/providers/reminders/README.md)
 
 ### Microsoft Tasks
 
@@ -117,8 +138,8 @@ The server will start on `http://localhost:3000` (or the port specified in your 
 
 ### Authentication
 
-#### Apple Reminders
-No authentication required. Works automatically on macOS.
+#### Apple Reminders & Reminders CLI
+No authentication required. Both work automatically on macOS.
 
 #### Google Tasks
 1. Get the authorization URL:
@@ -152,7 +173,7 @@ No authentication required. Works automatically on macOS.
 
 ### Endpoints
 
-All endpoints support a `provider` query parameter: `?provider=apple`, `?provider=microsoft`, or `?provider=google`
+All endpoints support a `provider` query parameter: `?provider=apple`, `?provider=reminders-cli`, `?provider=microsoft`, or `?provider=google`
 
 #### Get Available Providers
 ```bash
@@ -266,6 +287,9 @@ Response:
 # Get all lists from Apple Reminders
 curl http://localhost:3000/api/lists?provider=apple
 
+# Get all lists using the reminders CLI
+curl http://localhost:3000/api/lists?provider=reminders-cli
+
 # Get tasks from Microsoft Tasks (with authentication)
 curl -H "X-Session-ID: xyz123" \
   http://localhost:3000/api/lists/AAMkAD.../tasks?provider=microsoft
@@ -277,9 +301,9 @@ curl -X POST \
   -d '{"name": "Review PR", "notes": "Check the new feature branch"}' \
   http://localhost:3000/api/lists/MTIzNDU2Nzg5/tasks?provider=google
 
-# Complete a task
+# Complete a task using reminders CLI
 curl -X PATCH \
-  http://localhost:3000/api/lists/x-apple-reminder://ABC/tasks/x-apple-reminder://ABC/DEF/complete?provider=apple
+  "http://localhost:3000/api/lists/Reminders/tasks/51951E24-3DC1-4835-9DEE-E8FEEE440550/complete?provider=reminders-cli"
 ```
 
 ### Using with JavaScript/Fetch
@@ -323,6 +347,17 @@ await fetch(
 **Problem:** Lists or tasks not appearing
 - **Solution:** Make sure you have lists and tasks in the Reminders app
 
+### Reminders CLI
+
+**Problem:** "macOS cannot verify that this app is free from malware"
+- **Solution:** Run `xattr -d com.apple.quarantine src/providers/reminders/reminders`
+
+**Problem:** "Permission denied"
+- **Solution:** Run `chmod +x src/providers/reminders/reminders`
+
+**Problem:** "Command failed" or "No reminder found"
+- **Solution:** Make sure the list name is correct (case-sensitive) and grant permissions in System Settings > Privacy & Security > Automation
+
 ### Microsoft Tasks
 
 **Problem:** "Client not initialized"
@@ -346,7 +381,11 @@ task-server/
 ├── src/
 │   ├── server.js                 # Main Express server
 │   └── providers/
-│       ├── apple.js              # Apple Reminders integration
+│       ├── apple.js              # Apple Reminders integration (AppleScript)
+│       ├── reminders-cli.js      # Apple Reminders integration (CLI)
+│       ├── reminders/
+│       │   ├── reminders         # CLI executable
+│       │   └── README.md         # CLI provider documentation
 │       ├── microsoft.js          # Microsoft Tasks integration
 │       └── google.js             # Google Tasks integration
 ├── package.json
