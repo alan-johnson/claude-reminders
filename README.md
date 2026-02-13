@@ -1,4 +1,4 @@
-# Claude Reminders
+# Handsbreadth Reminders
 
 A task management application for Pebble smartwatches that works with Apple Reminders. Features include a card style view of lists and task for easier navigation on the Pebble watch. Marking tasks as completed on the Pebble watch and having the completion status sync'd to the Reminders app on the Mac.
 
@@ -13,14 +13,14 @@ A task management application for Pebble smartwatches that works with Apple Remi
 
 ## Project Structure
 
-This covers the overall architecture of the Claude Reminders project code.
+This covers the overall architecture of the Handsbreadth Reminders project code.
 
 ```
 task_manager.c, .h      - Main C application (watch-side code)
 task_list_view.c, .h    - Tasks within a specific list
 task_detail_view.c, .h  - A specific Task details
 index.js                - PebbleKit JavaScript (phone-side API communication)
-config.html			    - Claude Reminders app configuration page
+config.html			    - Handsbreadth Reminders app configuration page
 package.json            - Pebble app configuration
 
 server.py               - Python script to receive API calls from the index.js script then calls the locally installed reminder-cli application returning the results as JSON
@@ -36,9 +36,9 @@ server.py               - Python script to receive API calls from the index.js s
 - The IP address of your Mac
 
 ## Installation Steps
-1. Clone and download the GitHub project at [Claude Reminders GitHub repository](https://github.com/alan-johnson/claude-reminders.git).
+1. Clone and download the GitHub project at [Handsbreadth Reminders GitHub repository](https://github.com/alan-johnson/hb-reminders.git).
 2. Open a Terminal window.
-3. Change to the `claude-reminders` directory where you put the cloned GitHub project.
+3. Change to the `hb-reminders` directory where you put the cloned GitHub project.
 
 ### Steps to Start the Python server
 
@@ -46,7 +46,7 @@ server.py               - Python script to receive API calls from the index.js s
 	`python --version`
 2. Install the Python requirements.
 	`pip install -r requirements.txt`
-3. In the `claude-reminders/server-py` directory, edit the file `config.py`.
+3. In the `hb-reminders/server-py` directory, edit the file `config.py`.
 4. In the `config.py` file, change the value of `host_port` if `5050` conflicts with another application on your Mac.
 	
 	```
@@ -57,18 +57,18 @@ server.py               - Python script to receive API calls from the index.js s
 	```
 
 #### Installing and starting the server
-1. Copy the reminders-cli (`reminders`) application to the `claude-reminders\server-py` project directory.
+1. Copy the reminders-cli (`reminders`) application to the `hb-reminders\server-py` project directory.
 2. Run the reminders-cli application, `reminders`
 3. Accept to allow connections to the Reminders application on your Mac.
 4. Start the Python server script.
-	- In Terminal, make sure you are in the project's `claude-reminders/server-py` directory. 
+	- In Terminal, make sure you are in the project's `hb-reminders/server-py` directory. 
 	- Type `python server.py` then press ENTER. The server should start listening.
 	- Stop the server by pressing the `<CTRL> C` keys at the same time (control key and the letter C key).
 
 ## Usage
-1. If you have not already, in the Pebble phone app, add the **Claude Reminders** watch app to your Pebble watch. 
-1. In the Pebble phone app, select **Apps**. The **Claude Reminders** app should display.
-2. Tap the **Claude Reminders** icon to show the detail page, then tap the **Settings** button.
+1. If you have not already, in the Pebble phone app, add the **HB Reminders** (Handsbreadth is abbviated as HB) watch app to your Pebble watch. 
+1. In the Pebble phone app, select **Apps**. The **HB Reminders** app should display.
+2. Tap the **HB Reminders** icon to show the detail page, then tap the **Settings** button.
 3. Type your IP address of the Mac where the Python Server is running then type the Port Number, if it's not 5050. Save the settings.
 1. **Launch the app** - Shows all task list names
 2. **Select a list** - Click SELECT button to view tasks in that list
@@ -85,13 +85,13 @@ This section contains information if you wish to make changes to the source code
 OR
 	- Create a GitHub account and use Pebble's GitHub Cloudspaces, [Pebble Cloudspace information](https://developer.repebble.com/sdk/cloud)
 - The REST API is running on `hostip_address:5050`
-	- The hostname and port number can be configured from the **Claude Reminders** app, using the configuration page from the **Claude Reminders** app settings in your Pebble phone app.
+	- The hostname and port number can be configured from the **HB Reminders** app, using the configuration page from the **HB Reminders** app settings in your Pebble phone app.
 - The `reminders-cli` command line interface (cli) application.
 
 ### Building the Watch App
 1. **Using Pebble SDK locally:**
 	
-	This assumes you have already forked the Claude Reminders project from [GitHub](https://github.com/alan-johnson/claude-reminders.git)
+	This assumes you have already forked the HB Reminders project from [GitHub](https://github.com/alan-johnson/hb-reminders.git)
    
    - Build and install
      ```
@@ -100,7 +100,7 @@ OR
      ```
 
 2. **Using CloudPebble:** *these need updating, stay tuned*
-   - Create a new project named **claude-reminders**.
+   - Create a new project named **hb-reminders**.
    - Copy the contents of `task_manager.c` to the main C file
    - Add `app.js` as a new JavaScript file
    - Update `appinfo.json` with the provided configuration
@@ -175,7 +175,7 @@ In `task_manager.c` and `task_manager.h`, you can adjust:
 	- Note: these will be modified in the future to dynamically resize
 	
 - String buffer sizes for names, IDs, etc.
-- Internationalization: Strings have been externalized in the `claude-reminders\src\c\strings.h` file. There are plans to have various `strings-<language code>.h` files then have the correct language file used during the build step. The code to support this has not yet been implemented.
+- Internationalization: Strings have been externalized in the `hb-reminders\src\c\strings.h` file. There are plans to have various `strings-<language code>.h` files then have the correct language file used during the build step. The code to support this has not yet been implemented.
 
 ### UI Styling
 
