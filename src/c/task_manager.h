@@ -13,6 +13,7 @@
 #define KEY_IDX 6
 #define KEY_PRIORITY 7
 #define KEY_NOTES 8
+#define KEY_COUNT 9
 
 // Navigation state
 typedef enum {
@@ -38,15 +39,12 @@ typedef struct {
 } Task;               // total: 456 bytes
 
 // Global state (defined in task_manager.c)
-extern TaskList task_lists[20];
+extern TaskList *task_lists;
 extern int task_lists_count;
-// Reduce tasks array for Aplite to fit in 24KB RAM
-#if defined(PBL_PLATFORM_APLITE)
-extern Task tasks[20];  // 20 × 456 = 9,120 bytes for Aplite
-#else
-extern Task tasks[50];  // 50 × 456 = 22,800 bytes for other platforms
-#endif
+extern int task_lists_capacity;
+extern Task *tasks;
 extern int tasks_count;
+extern int tasks_capacity;
 extern int selected_list_index;
 extern int selected_task_index;
 extern AppState current_state;

@@ -1,6 +1,6 @@
 {
-  "name": "claude-reminders",
-  "author": "Handsbreadth",
+  "name": "hb-reminders",
+  "author": "handsbreadth, LLC",
   "version": "1.0.0",
   "private": true,
   "keywords": [
@@ -23,7 +23,7 @@
       "configurable"
     ],
     "projectType": "native",
-    "displayName": "Claude Reminders",
+    "displayName": "HB Reminders",
     "uuid": "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d",
     "watchapp": {
       "watchface": false,
@@ -48,7 +48,8 @@
       "KEY_LIST_NAME": 5,
       "KEY_IDX": 6,
       "KEY_PRIORITY": 7,
-      "KEY_NOTES": 8
+      "KEY_NOTES": 8,
+      "KEY_COUNT": 9
     }
   }
 }

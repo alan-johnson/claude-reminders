@@ -125,8 +125,18 @@ function sendTaskListsToWatch(lists) {
     );
   }
 
-  // Start sending lists
-  sendNextList();
+  // Send count first so the watch can allocate memory
+  var countDict = { 'KEY_TYPE': 1, 'KEY_COUNT': lists.length };
+  Pebble.sendAppMessage(countDict,
+    function(e) {
+      console.log('Task lists count (' + lists.length + ') sent, now sending items...');
+      setTimeout(sendNextList, 100);
+    },
+    function(e) {
+      console.log('Error sending task lists count, retrying...');
+      setTimeout(function() { sendTaskListsToWatch(lists); }, 200);
+    }
+  );
 }
 
 // Fetch tasks for a specific list
@@ -294,34 +304,13 @@ function convertDateToISO(dateStr) {
 
 // Send tasks to the watch sequentially with delays to avoid APP_MSG_BUSY
 function sendTasksToWatch(tasks) {
-  // If no tasks, send a message to clear loading state
-  if (!tasks || tasks.length === 0) {
-    console.log('No tasks to send, sending empty message to clear loading state');
-    var dict = {
-      'KEY_TYPE': 2,
-      'KEY_ID': '',
-      'KEY_NAME': '',
-      'KEY_DUE_DATE': 'No due date',
-      'KEY_COMPLETED': 0,
-      'KEY_NOTES': ''
-    };
-
-    Pebble.sendAppMessage(dict,
-      function(e) {
-        console.log('Empty task list message sent to Pebble successfully!');
-      },
-      function(e) {
-        console.log('Error sending empty task list message to Pebble!');
-      }
-    );
-    return;
-  }
+  var taskCount = (tasks && tasks.length) ? tasks.length : 0;
 
   // Send tasks one at a time with delay to avoid APP_MSG_BUSY
   var currentIndex = 0;
 
   function sendNextTask() {
-    if (currentIndex >= tasks.length) {
+    if (currentIndex >= taskCount) {
       console.log('All tasks sent successfully');
       return;
     }
@@ -336,7 +325,6 @@ function sendTasksToWatch(tasks) {
         dueDate = convertedDate;
       } else {
         console.log('Failed to convert date for task:', task.name, 'Original date:', task.dueDate);
-        // If conversion fails, don't send a date
         dueDate = 'No due date';
       }
     }
@@ -352,7 +340,7 @@ function sendTasksToWatch(tasks) {
 
     Pebble.sendAppMessage(dict,
       function(e) {
-        console.log('Task ' + (currentIndex + 1) + '/' + tasks.length + ' sent successfully');
+        console.log('Task ' + (currentIndex + 1) + '/' + taskCount + ' sent successfully');
         currentIndex++;
         // Wait 100ms before sending next message to avoid APP_MSG_BUSY
         setTimeout(sendNextTask, 100);
@@ -365,8 +353,20 @@ function sendTasksToWatch(tasks) {
     );
   }
 
-  // Start sending tasks
-  sendNextTask();
+  // Send count first so the watch can allocate memory
+  var countDict = { 'KEY_TYPE': 2, 'KEY_COUNT': taskCount };
+  Pebble.sendAppMessage(countDict,
+    function(e) {
+      console.log('Tasks count (' + taskCount + ') sent, now sending items...');
+      if (taskCount > 0) {
+        setTimeout(sendNextTask, 100);
+      }
+    },
+    function(e) {
+      console.log('Error sending tasks count, retrying...');
+      setTimeout(function() { sendTasksToWatch(tasks); }, 200);
+    }
+  );
 }
 
 // Complete a task

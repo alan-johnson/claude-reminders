@@ -1,4 +1,5 @@
 #include <pebble.h>
+#include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
 #include "task_manager.h"
@@ -12,15 +13,12 @@ static MenuLayer *s_lists_menu;
 
 // Global state (definitions for variables declared extern in task_manager.h)
 AppState current_state = STATE_TASK_LISTS;
-TaskList task_lists[20]; // 20 × 101 = 2,020 bytes
+TaskList *task_lists = NULL;
 int task_lists_count = 0;
-// Reduce tasks array for Aplite to fit in 24KB RAM
-#if defined(PBL_PLATFORM_APLITE)
-Task tasks[20];  // 20 × 456 = 9,120 bytes for Aplite
-#else
-Task tasks[50];  // 50 × 456 = 22,800 bytes for other platforms
-#endif
+int task_lists_capacity = 0;
+Task *tasks = NULL;
 int tasks_count = 0;
+int tasks_capacity = 0;
 int selected_list_index = 0;
 int selected_task_index = 0;
 bool js_ready = false;  // set when JS signals it's ready
@@ -74,8 +72,10 @@ static void lists_menu_select(MenuLayer *menu_layer, MenuIndex *cell_index, void
   selected_list_index = cell_index->row;
   current_state = STATE_TASKS;
 
-  // Reset tasks count and set loading flag before fetching new list
+  // Free previous tasks and reset before fetching new list
+  if (tasks) { free(tasks); tasks = NULL; }
   tasks_count = 0;
+  tasks_capacity = 0;
   tasks_loading = true;
 
   window_stack_push(task_list_view_get_window(), true);
@@ -236,11 +236,29 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         break;
       }
       case 1: { // Task list names
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received list name");
-        
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received list data");
+
+        Tuple *count_tuple = dict_find(iterator, KEY_COUNT);
+        if (count_tuple) {
+          // Count message — allocate array
+          int count = count_tuple->value->int32;
+          APP_LOG(APP_LOG_LEVEL_INFO, "Allocating task_lists for %d lists", count);
+          if (task_lists) free(task_lists);
+          task_lists_count = 0;
+          if (count > 0) {
+            task_lists = (TaskList *)malloc(count * sizeof(TaskList));
+            task_lists_capacity = task_lists ? count : 0;
+          } else {
+            task_lists = NULL;
+            task_lists_capacity = 0;
+          }
+          if (s_lists_menu) menu_layer_reload_data(s_lists_menu);
+          break;
+        }
+
         Tuple *id_tuple = dict_find(iterator, KEY_ID);
         Tuple *name_tuple = dict_find(iterator, KEY_NAME);
-        if (name_tuple && task_lists_count < 20) {
+        if (name_tuple && task_lists && task_lists_count < task_lists_capacity) {
           snprintf(task_lists[task_lists_count].id, sizeof(task_lists[0].id),
                    "%s", id_tuple->value->cstring);
           snprintf(task_lists[task_lists_count].name, sizeof(task_lists[0].name),
@@ -253,11 +271,31 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       }
       
       case 2: { // Tasks in a list
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received task list");
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, received task data");
 
         // Clear loading flag when receiving any task message
         if (tasks_loading) {
           tasks_loading = false;
+        }
+
+        Tuple *count_tuple = dict_find(iterator, KEY_COUNT);
+        if (count_tuple) {
+          // Count message — allocate array
+          int count = count_tuple->value->int32;
+          APP_LOG(APP_LOG_LEVEL_INFO, "Allocating tasks for %d tasks", count);
+          if (tasks) free(tasks);
+          tasks_count = 0;
+          if (count > 0) {
+            tasks = (Task *)malloc(count * sizeof(Task));
+            tasks_capacity = tasks ? count : 0;
+          } else {
+            tasks = NULL;
+            tasks_capacity = 0;
+            // Reload menu to show "No tasks" instead of "Loading..."
+            MenuLayer *tasks_menu = task_list_view_get_menu();
+            if (tasks_menu) menu_layer_reload_data(tasks_menu);
+          }
+          break;
         }
 
         // Parse task data from dictionary
@@ -271,13 +309,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         // Check if this is an empty task message (used to signal end of empty list)
         if (name_tuple && strlen(name_tuple->value->cstring) == 0) {
           APP_LOG(APP_LOG_LEVEL_DEBUG, "Received empty task list message");
-          // Just reload the menu to show "No tasks" instead of "Loading..."
           MenuLayer *tasks_menu = task_list_view_get_menu();
           if (tasks_menu) menu_layer_reload_data(tasks_menu);
           break;
         }
 
-        if (id_tuple && name_tuple && tasks_count < 50) {
+        if (id_tuple && name_tuple && tasks && tasks_count < tasks_capacity) {
           APP_LOG(APP_LOG_LEVEL_DEBUG, "inbox, setting task data");
 
           snprintf(tasks[tasks_count].id, sizeof(tasks[0].id),
@@ -297,7 +334,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
           if (tasks_menu) menu_layer_reload_data(tasks_menu);
         } else {
           APP_LOG(APP_LOG_LEVEL_ERROR, "Missing task data or task limit reached");
-        } 
+        }
         break;
       }
     }
@@ -322,10 +359,13 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 #ifdef TESTING
 static void fetch_task_lists_testing(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_task_lists_testing called");
-  
-  task_lists_count = 0;
+
   int n = (int)(sizeof(task_lists_testing) / sizeof(task_lists_testing[0]));
-  for (int i = 0; i < n && task_lists_count < (int)(sizeof(task_lists) / sizeof(task_lists[0])); i++) {
+  if (task_lists) free(task_lists);
+  task_lists = (TaskList *)malloc(n * sizeof(TaskList));
+  task_lists_capacity = task_lists ? n : 0;
+  task_lists_count = 0;
+  for (int i = 0; i < n && task_lists_count < task_lists_capacity; i++) {
     snprintf(task_lists[task_lists_count].name, sizeof(task_lists[task_lists_count].name), "%s", task_lists_testing[i]);
     APP_LOG(APP_LOG_LEVEL_DEBUG, "added list name: %s", task_lists[task_lists_count].name);
     task_lists_count++;
@@ -335,7 +375,7 @@ static void fetch_task_lists_testing(void) {
 
 static void fetch_tasks_testing(void) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "fetch_tasks_testing called");
-  
+
   // Sample task names
   const char* sample_names[] = {
     "Complete project report",
@@ -389,14 +429,18 @@ static void fetch_tasks_testing(void) {
     "Add caching",
     "Configure webhook"
   };
-  
+
   // Sample due dates
   const char* sample_dates[] = {
     "2026-02-01", "2026-02-05", "2026-02-10", "2026-02-15", "2026-02-20",
     "2026-03-01", "2026-03-05", "2026-03-10", "2026-03-15", "2026-03-20"
   };
-  
-  tasks_count = 10;
+
+  int test_count = 10;
+  if (tasks) free(tasks);
+  tasks = (Task *)malloc(test_count * sizeof(Task));
+  tasks_capacity = tasks ? test_count : 0;
+  tasks_count = test_count;
   for (int i = 0; i < tasks_count; i++) {
     // Cycle through list indices
     tasks[i].idx = i % 14;
@@ -537,6 +581,8 @@ static void init(void) {
 }
 
 static void deinit(void) {
+  if (task_lists) { free(task_lists); task_lists = NULL; }
+  if (tasks) { free(tasks); tasks = NULL; }
   if (s_lists_window) window_destroy(s_lists_window);
   task_list_view_deinit();
   task_detail_view_deinit();
