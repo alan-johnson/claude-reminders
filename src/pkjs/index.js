@@ -332,7 +332,7 @@ function sendTasksToWatch(tasks) {
     }
     var maxLength = 255; // Max length for notes
     task.notes = task.notes.slice(0, maxLength);
-    
+
     var dict = {
       'KEY_TYPE': 2,
       'KEY_ID': task.id || '',
@@ -341,17 +341,6 @@ function sendTasksToWatch(tasks) {
       'KEY_COMPLETED': task.completed ? 1 : 0,
       'KEY_NOTES': task.notes || ''
     };
-
-/*
-     var dict = {
-      'KEY_TYPE': 2,
-      'KEY_ID': task.id || '',
-      'KEY_NAME': task.name || '',
-      'KEY_DUE_DATE': dueDate,
-      'KEY_COMPLETED': task.completed ? 1 : 0,
-      'KEY_NOTES': ''
-    };
-*/
 
     Pebble.sendAppMessage(dict,
       function(e) {
