@@ -36,6 +36,12 @@
           "type": "bitmap",
           "name": "IMAGE_CHECKMARK",
           "file": "checkmark-wht.png"
+        },
+        {
+          "type": "png",
+          "name": "IMAGE_MENU_ICON",
+          "file": "hb-grayscale25x25.png",
+          "menuIcon": true
         }
       ]
     },
