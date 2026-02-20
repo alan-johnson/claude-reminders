@@ -11,6 +11,7 @@ var hostname = localStorage.getItem('api_hostname') || DEFAULT_HOSTNAME;
 var port = parseInt(localStorage.getItem('api_port')) || DEFAULT_PORT;
 var provider = localStorage.getItem('api_provider') || DEFAULT_PROVIDER;
 var API_BASE = "http://" + hostname + ":" + port + "/api";
+var listNameToId = {};  // Cache list name -> ID for task completion
 
 console.log('Using API:', API_BASE);
 
@@ -98,6 +99,15 @@ function fetchTaskLists() {
 
 // Send task lists to the watch sequentially with delays to avoid APP_MSG_BUSY
 function sendTaskListsToWatch(lists) {
+  // Cache list name -> ID mapping for task completion
+  listNameToId = {};
+  for (var i = 0; i < lists.length; i++) {
+    var id = lists[i].id || i;
+    var name = lists[i].name || lists[i];
+    listNameToId[name] = id;
+  }
+  console.log('Cached list name->ID map:', JSON.stringify(listNameToId));
+
   var currentIndex = 0;
   var retryDelay = 500;
 
@@ -377,16 +387,17 @@ function sendTasksToWatch(tasks) {
 
 // Complete a task
 function completeTask(taskId, listName) {
-  console.log('Completing task: ' + taskId + ' in list: ' + listName);
-  
+  var listId = listNameToId[listName] || listName;
+  console.log('Completing task: ' + taskId + ' in list: ' + listName + ' (id: ' + listId + ')');
+
   var xhr = new XMLHttpRequest();
-  xhr.open('POST', API_BASE + '/complete', true);
+  var url = API_BASE + '/lists/' + encodeURIComponent(listId) + '/tasks/' + encodeURIComponent(taskId) + '/complete?' + 'provider=' + provider;
+  xhr.open('PATCH', url, true);
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onload = function() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200 || xhr.status === 204) {
         console.log('Task completed successfully');
-        // Optionally send confirmation back to watch
         var dict = {
           'KEY_TYPE': 4,
           'KEY_ID': taskId
@@ -397,13 +408,8 @@ function completeTask(taskId, listName) {
       }
     }
   };
-  
-  var data = JSON.stringify({
-    taskId: taskId,
-    listName: listName
-  });
 
-  xhr.send(data);
+  xhr.send();
 }
 
 // Configuration page handlers

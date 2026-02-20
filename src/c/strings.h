@@ -18,10 +18,17 @@
 #define STR_COMPLETED "Completed"
 #define STR_PENDING "Pending"
 
+// Task priority strings
+#define STR_PRIORITY_LOW "Low"
+#define STR_PRIORITY_MEDIUM "Medium"
+#define STR_PRIORITY_HIGH "High"
+
 // Detail view labels
 #define STR_TASK_LABEL "Task: "
 #define STR_DUE_LABEL "Due: "
 #define STR_STATUS_LABEL "Status: "
+#define STR_PRIORITY_LABEL "Priority: "
+#define STR_NOTES_LABEL "Notes: "
 
 // Instructions
 #define STR_SELECT_TO_MARK_COMPLETE "Select to mark complete"

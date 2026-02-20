@@ -221,10 +221,12 @@ void task_detail_view_show(Task *task) {
   convert_iso_to_friendly_date(task->due_date, s_time_buffer, sizeof(s_time_buffer));
 
   snprintf(s_detail_text, sizeof(s_detail_text),
-           "%s%s\n\n%s%s\n\n%s%s\n\n%s",
+           "%s%s\n\n%s%s\n\n%s%s\n\n%s%s\n\n%s%s\n\n%s",
            STR_TASK_LABEL, task->name,
            STR_DUE_LABEL, s_time_buffer,
            STR_STATUS_LABEL, task->completed ? STR_COMPLETED : STR_PENDING,
+           STR_PRIORITY_LABEL, task->priority == 1 ? STR_PRIORITY_LOW : (task->priority == 2 ? STR_PRIORITY_MEDIUM : STR_PRIORITY_HIGH),
+           STR_NOTES_LABEL, task->notes,
            STR_SELECT_TO_MARK_COMPLETE);
 
   // Push window to stack (this will trigger the load callback which sets the text and click config)
